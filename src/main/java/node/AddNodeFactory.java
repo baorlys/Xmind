@@ -1,4 +1,6 @@
 package node;
+import settings.NodeType;
+
 import java.util.EnumMap;
 import java.util.Map;
 

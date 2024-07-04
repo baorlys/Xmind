@@ -1,59 +1,47 @@
 package board;
 
-import node.Node;
+import lombok.Getter;
+import lombok.Setter;
+import node.INode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Getter
+@Setter
 public class RelationShip {
-    private Node node;
+    private INode node;
 
-    private List<HashMap<Node,String>> relation;
+    private List<HashMap<INode,String>> relation;
 
     private static final String DEFAULT_RELATIONSHIP_NAME = "relationship";
 
-    public RelationShip(Node node) {
+    public RelationShip(INode node) {
         this.node = node;
         this.relation = new ArrayList<>();
     }
 
 
-    public Node getNode() {
-        return node;
-    }
-
-
-    public void setNode(Node node) {
-        this.node = node;
-    }
-
-    public List<HashMap<Node,String>> getRelation() {
-        return relation;
-    }
-
-    public void setRelation(List<HashMap<Node,String>> relation) {
-        this.relation = relation;
-    }
-
-
-    public void addRelation(Node node) {
-        HashMap<Node, String> relationMap = new HashMap<>();
+    public void addRelation(INode node) {
+        HashMap<INode, String> relationMap = new HashMap<>();
         relationMap.put(node, DEFAULT_RELATIONSHIP_NAME);
         relation.add(relationMap);
     }
 
-    public void changeRelationName(Node node, String relationName) {
+    public void changeRelationName(INode node, String relationName) {
         relation.stream().filter(relationMap -> relationMap.containsKey(node))
                 .findFirst().ifPresent(relationMap -> relationMap.put(node, relationName));
     }
 
-    public void removeRelation(Node node) {
+    public void removeRelation(INode node) {
         relation.stream().filter(relationMap -> relationMap.containsKey(node))
                 .findFirst().ifPresent(relation::remove);
     }
 
-    public boolean isRelated(Node node) {
+    public boolean isRelated(INode node) {
         return relation.stream().anyMatch(relationMap -> relationMap.containsKey(node));
     }
+
+
 }

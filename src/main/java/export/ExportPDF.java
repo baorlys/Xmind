@@ -1,6 +1,7 @@
 package export;
 
 import board.Sheet;
+import settings.ExportStatus;
 
 public class ExportPDF implements ITypeExport {
     @Override

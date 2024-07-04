@@ -1,16 +1,22 @@
 package board;
 
-import node.AddNodeFactory;
-import node.Node;
-import node.NodeType;
+import lombok.Getter;
+import lombok.Setter;
+import node.*;
+import point.Point;
+import settings.NodeType;
+import settings.Structure;
+import settings.ViewMode;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter
 public class Sheet {
     private boolean isBalanced;
     private String name;
-    private Node rootTopic;
+    private IRootNode rootTopic;
 
     HashSet<RelationShip> nodes = new HashSet<>();
 
@@ -21,50 +27,26 @@ public class Sheet {
     public Sheet(String name) {
         this.name = name;
     }
-    public Sheet(String name, Node rootTopic) {
+    public Sheet(String name, IRootNode rootTopic) {
         this.name = name;
         this.rootTopic = rootTopic;
         this.addNewNode(rootTopic);
     }
 
-    public boolean isBalanced() {
-        return isBalanced;
-    }
 
-    public void setBalanced(boolean balanced) {
-        isBalanced = balanced;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Node getRootTopic() {
-        return rootTopic;
-    }
-
-    public void setRootTopic(Node rootTopic) {
-        this.rootTopic = rootTopic;
-    }
-
-
-    public void addNewNode(Node node) {
+    public void addNewNode(INode node) {
         nodes.add(new RelationShip(node));
     }
 
-    public List<Node> getAllNodes() {
+    public List<INode> getAllNodes() {
         return nodes.stream().map(RelationShip::getNode).collect(Collectors.toList());
     }
 
-    public Node addNodeToCurrentTopic(Node currentTopic) {
+    public IChildNode addNodeToCurrentTopic(INode currentTopic) {
         NodeType nodeType = currentTopic.getType();
         int nodeCount = currentTopic.getChildren().size();
         NodeType childNodeType = AddNodeFactory.getChildNodeType(nodeType);
-        Node newNode = new Node(childNodeType.toString().replace("_"," ").toLowerCase()
+        IChildNode newNode = new ChildNode(childNodeType.toString().replace("_"," ").toLowerCase()
                 + " " + (nodeCount + 1), childNodeType);
         newNode.setParent(currentTopic);
         currentTopic.addChild(newNode);
@@ -74,51 +56,65 @@ public class Sheet {
 
 
 
-    public Node addFloatTopic() {
-        Node floatTopic = new Node(NodeType.FLOATING_TOPIC.toString().replace("_"," ").toLowerCase()
+    public IChildNode addFloatTopic() {
+        IChildNode floatTopic = new ChildNode(NodeType.FLOATING_TOPIC.toString().replace("_"," ").toLowerCase()
               , NodeType.FLOATING_TOPIC);
         this.addNewNode(floatTopic);
         return floatTopic;
     }
 
-    public void removeNode(Node topic) {
-        Node parent = topic.getParent();
-        parent.removeChild(topic);
-        nodes.removeIf(relationShip -> relationShip.getNode().equals(topic));
+    public void removeNode(IChildNode topic) {
+        topic.removeParent();
+        nodes.removeIf(listNode -> listNode.getNode().equals(topic));
     }
 
-    public void moveNode(Node nodeIsMoved, Node parentNode) {
+    public void moveNode(IChildNode nodeIsMoved, INode parentNode) {
         nodeIsMoved.moveToParent(parentNode);
     }
-    public void moveNode(Node node) {
-        node.removeParent();
+    public void moveNode(IChildNode nodeIsMoved) {
+        nodeIsMoved.removeParent();
     }
 
-    public void createRelationship(Node fromNode, Node toNode) {
-        nodes.stream().filter(relationShip -> relationShip.getNode().equals(fromNode))
-                .forEach(relationShip -> relationShip.addRelation(toNode));
+    public void moveNode(Point positionCurrentNode, Point positionNextNode) {
+        INode currentNode = getNodeByPosition(positionCurrentNode);
+        if (currentNode == null || currentNode.getType() == NodeType.ROOT) {
+            return;
+        }
+
+        INode nextNode = getNodeByPosition(positionNextNode);
+        if (nextNode == null) {
+            return;
+        }
+
+        moveNode((IChildNode) currentNode, nextNode);
+
+    }
+
+    public void createRelationship(INode fromNode, INode toNode) {
+        nodes.stream().filter(listNode -> listNode.getNode().equals(fromNode))
+                .forEach(listNode -> listNode.addRelation(toNode));
     }
 
 
-    public Node getNode(Node node) {
+    public INode getNode(INode node) {
         return nodes.stream().map(RelationShip::getNode)
-                .filter(relationShipNode -> relationShipNode.equals(node))
+                .filter(listNode -> listNode.equals(node))
                 .findFirst().orElse(null);
     }
 
-    public RelationShip getRelationships(Node node) {
-        return nodes.stream().filter(relationShip -> relationShip.getNode().equals(node))
+    public RelationShip getRelationships(INode node) {
+        return nodes.stream().filter(listNode -> listNode.getNode().equals(node))
                 .findFirst().orElse(null);
     }
 
-    public void removeRelationship(Node node1, Node node2) {
-        nodes.stream().filter(relationShip -> relationShip.getNode().equals(node1))
-                .forEach(relationShip -> relationShip.removeRelation(node2));
+    public void removeRelationship(INode node1, INode node2) {
+        nodes.stream().filter(listNode -> listNode.getNode().equals(node1))
+                .forEach(listNode -> listNode.removeRelation(node2));
     }
 
-    public void changeRelationshipName(Node node1, Node node2, String relationshipName) {
-        nodes.stream().filter(relationShip -> relationShip.getNode().equals(node1))
-                .forEach(relationShip -> relationShip.changeRelationName(node2, relationshipName));
+    public void changeRelationshipName(INode node1, INode node2, String relationshipName) {
+        nodes.stream().filter(listNode -> listNode.getNode().equals(node1))
+                .forEach(listNode -> listNode.changeRelationName(node2, relationshipName));
 
     }
 
@@ -134,4 +130,18 @@ public class Sheet {
     public ViewMode getViewMode() {
         return viewMode;
     }
+
+
+    public INode getNodeByPosition(Point positionClick) {
+        return nodes.stream().map(RelationShip::getNode)
+                .filter(node -> node.getShape().isContainPoint(positionClick))
+                .findFirst().orElse(null);
+    }
+
+
+    public void changeStructure(INode node, Structure structure) {
+        node.changeStructure(structure);
+    }
+
+
 }

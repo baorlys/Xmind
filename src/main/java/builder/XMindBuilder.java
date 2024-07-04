@@ -2,8 +2,8 @@ package builder;
 
 import board.Board;
 import board.Sheet;
-import node.Node;
-import node.NodeType;
+import node.IRootNode;
+import node.RootNode;
 
 public class XMindBuilder {
     Board xmind;
@@ -39,8 +39,8 @@ public class XMindBuilder {
 
     public XMindBuilder initDefaultTopics() {
         Sheet sheet = xmind.getFirstSheet();
-        sheet.setRootTopic(new Node(DEFAULT_ROOT_NAME, NodeType.ROOT));
-        Node rootTopic = sheet.getRootTopic();
+        sheet.setRootTopic(new RootNode(DEFAULT_ROOT_NAME));
+        IRootNode rootTopic = sheet.getRootTopic();
         for (int i = 0; i < DEFAULT_NUMBER_OF_MAIN_TOPICS; i++) {
             sheet.addNodeToCurrentTopic(rootTopic);
         }

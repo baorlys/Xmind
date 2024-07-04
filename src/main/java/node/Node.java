@@ -1,71 +1,59 @@
 package node;
 
+import lombok.Getter;
+import lombok.Setter;
+import settings.NodeType;
+import settings.Structure;
+import shape.Shape;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Node {
+@Getter
+@Setter
+public class Node implements INode {
     private String text;
 
-    private Node parent;
-    private List<Node> children = new ArrayList<>();
+    private List<IChildNode> children;
+
+    private Shape shape;
 
     private NodeType type;
 
+    // Default structure is MIND_MAP
+    private Structure structure = Structure.MIND_MAP;
+
     public Node(String text, NodeType type) {
         this.text = text;
+        this.children = new ArrayList<>();
         this.type = type;
-    }
-
-    public NodeType getType() {
-        return type;
-    }
-
-    public void setType(NodeType type) {
-        this.type = type;
+        initShape();
     }
 
     public void setText(String text) {
         this.text = text;
+        this.shape.setWidth(text.length());
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public void setChildren(List<Node> nodes) {
-        this.children = nodes;
-    }
-
-    public List<Node> getChildren() {
-        return children;
-    }
-
-    public void setParent(Node parent) {
-        this.parent = parent;
-    }
-
-    public Node getParent() {
-        return parent;
+    private void initShape() {
+        this.shape = new Shape(text.length());
     }
 
 
-    public void addChild(Node topic) {
-        children.add(topic);
+    @Override
+    public void addChild(IChildNode node) {
+        this.children.add(node);
     }
 
-    public void removeChild(Node topic) {
-        children.remove(topic);
+    @Override
+    public void removeChild(IChildNode node) {
+        this.children.remove(node);
+
     }
 
-    public void moveToParent(Node newParent) {
-        parent.removeChild(this);
-        newParent.addChild(this);
-        this.parent = newParent;
-    }
-
-    public void removeParent() {
-        this.parent.removeChild(this);
-        this.parent = null;
-        this.type = NodeType.FLOATING_TOPIC;
+    @Override
+    public void changeStructure(Structure structure) {
+        this.structure = structure;
+        children.forEach(child -> child.changeStructure(structure));
     }
 }

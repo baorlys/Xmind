@@ -1,11 +1,11 @@
 import board.Board;
 import board.Sheet;
-import board.ViewMode;
 import builder.XMindBuilder;
-import export.ExportStatus;
-import export.FileType;
-import node.Node;
-import node.NodeType;
+import node.INode;
+import point.Point;
+import settings.*;
+import node.IChildNode;
+import node.IRootNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -62,18 +62,28 @@ class TestXMind {
     // Test add node to root topic
     void testAddNode() {
         Sheet sheet = xMind.getFirstSheet();
-        Node rootTopic = sheet.getRootTopic();
-        Node newMainTopic = sheet.addNodeToCurrentTopic(rootTopic);
+        IRootNode rootTopic = sheet.getRootTopic();
+        IChildNode newMainTopic = sheet.addNodeToCurrentTopic(rootTopic);
         assertEquals(NodeType.MAIN_TOPIC, sheet.getNode(newMainTopic).getType());
-        Node newSubTopic = sheet.addNodeToCurrentTopic(newMainTopic);
+        IChildNode newSubTopic = sheet.addNodeToCurrentTopic(newMainTopic);
         assertEquals(NodeType.SUB_TOPIC, sheet.getNode(newSubTopic).getType());
+    }
+
+    @Test
+    // Test add child node to node by node position
+    void testAddNodeByPosition() {
+        Sheet sheet = xMind.getFirstSheet();
+        Point positionClick = new Point(0, 0);
+        INode nodeInPosition = sheet.getNodeByPosition(positionClick);
+        IChildNode newTopic = sheet.addNodeToCurrentTopic(nodeInPosition);
+        assertEquals(1, nodeInPosition.getChildren().size());
     }
 
     @Test
     // Test add float topic
     void testAddFloatTopic() {
         Sheet sheet = xMind.getFirstSheet();
-        Node floatTopic = sheet.addFloatTopic();
+        IChildNode floatTopic = sheet.addFloatTopic();
         assertEquals(NodeType.FLOATING_TOPIC, sheet.getNode(floatTopic).getType());
     }
 
@@ -81,8 +91,8 @@ class TestXMind {
     // Test add node to float topic
     void testAddNodeToFloatTopic() {
         Sheet sheet = xMind.getFirstSheet();
-        Node newFloatTopic = sheet.addFloatTopic();
-        Node newSubTopic = sheet.addNodeToCurrentTopic(newFloatTopic);
+        IChildNode newFloatTopic = sheet.addFloatTopic();
+        IChildNode newSubTopic = sheet.addNodeToCurrentTopic(newFloatTopic);
         assertEquals(NodeType.SUB_TOPIC, sheet.getNode(newSubTopic).getType());
     }
 
@@ -90,8 +100,8 @@ class TestXMind {
     // Test remove node
     void testRemoveNode() {
         Sheet sheet = xMind.getFirstSheet();
-        Node rootTopic = sheet.getRootTopic();
-        Node newMainTopic =sheet.addNodeToCurrentTopic(rootTopic);
+        IRootNode rootTopic = sheet.getRootTopic();
+        IChildNode newMainTopic =sheet.addNodeToCurrentTopic(rootTopic);
         assertEquals(5, sheet.getAllNodes().size());
         sheet.removeNode(newMainTopic);
         assertEquals(4, sheet.getAllNodes().size());
@@ -101,11 +111,23 @@ class TestXMind {
     // Test move node to another node
     void testMoveNode() {
         Sheet sheet = xMind.getFirstSheet();
-        Node rootTopic = sheet.getRootTopic();
-        Node newMainTopic = sheet.addNodeToCurrentTopic(rootTopic);
+        IRootNode rootTopic = sheet.getRootTopic();
+        IChildNode newMainTopic = sheet.addNodeToCurrentTopic(rootTopic);
+        IChildNode newSubTopic = sheet.addNodeToCurrentTopic(newMainTopic);
         assertEquals(5, rootTopic.getChildren().size());
-        Node newSubTopic = sheet.addNodeToCurrentTopic(newMainTopic);
+        assertEquals(1, newMainTopic.getChildren().size());
         sheet.moveNode(newSubTopic, rootTopic);
+        assertEquals(6, rootTopic.getChildren().size());
+        assertEquals(0, newMainTopic.getChildren().size());
+    }
+
+    @Test
+    // Test move node to another node by position
+    void testMoveNodeByPosition() {
+        Sheet sheet = xMind.getFirstSheet();
+        Point positionCurrentNode = new Point(0, 0);
+        Point positionNextNode = new Point(0, 1);
+        sheet.moveNode(positionCurrentNode, positionNextNode);
         assertEquals(6, rootTopic.getChildren().size());
         assertEquals(0, newMainTopic.getChildren().size());
     }
@@ -114,8 +136,8 @@ class TestXMind {
     // Test move node to floating topic
     void testMoveNodeToFloatTopic() {
         Sheet sheet = xMind.getFirstSheet();
-        Node rootTopic = sheet.getRootTopic();
-        Node newMainTopic = sheet.addNodeToCurrentTopic(rootTopic);
+        IRootNode rootTopic = sheet.getRootTopic();
+        IChildNode newMainTopic = sheet.addNodeToCurrentTopic(rootTopic);
         assertEquals(5, rootTopic.getChildren().size());
         sheet.moveNode(newMainTopic);
         assertEquals(4, rootTopic.getChildren().size());
@@ -126,9 +148,9 @@ class TestXMind {
     // Test create relationship between nodes
     void testCreateRelationship() {
         Sheet sheet = xMind.getFirstSheet();
-        Node rootTopic = sheet.getRootTopic();
-        Node newMainTopic = sheet.addNodeToCurrentTopic(rootTopic);
-        Node newSubTopic = sheet.addNodeToCurrentTopic(newMainTopic);
+        IRootNode rootTopic = sheet.getRootTopic();
+        IChildNode newMainTopic = sheet.addNodeToCurrentTopic(rootTopic);
+        IChildNode newSubTopic = sheet.addNodeToCurrentTopic(newMainTopic);
         sheet.createRelationship(newSubTopic, rootTopic);
         assertTrue(sheet.getRelationships(newSubTopic).isRelated(rootTopic));
     }
@@ -138,8 +160,8 @@ class TestXMind {
     // Test remove relationship between nodes
     void testRemoveRelationship() {
         Sheet sheet = xMind.getFirstSheet();
-        Node rootTopic = sheet.getRootTopic();
-        Node newMainTopic = sheet.addNodeToCurrentTopic(rootTopic);
+        IRootNode rootTopic = sheet.getRootTopic();
+        IChildNode newMainTopic = sheet.addNodeToCurrentTopic(rootTopic);
         sheet.createRelationship(newMainTopic, rootTopic);
         sheet.removeRelationship(newMainTopic, rootTopic);
         assertFalse(sheet.getRelationships(newMainTopic).isRelated(rootTopic));
@@ -150,8 +172,8 @@ class TestXMind {
     // Test change relationship name
     void testChangeRelationshipName() {
         Sheet sheet = xMind.getFirstSheet();
-        Node rootTopic = sheet.getRootTopic();
-        Node newMainTopic = sheet.addNodeToCurrentTopic(rootTopic);
+        IRootNode rootTopic = sheet.getRootTopic();
+        IChildNode newMainTopic = sheet.addNodeToCurrentTopic(rootTopic);
         sheet.createRelationship(newMainTopic, rootTopic);
         sheet.changeRelationshipName(newMainTopic, rootTopic, "new relationship name");
         assertTrue(sheet.getRelationships(newMainTopic)
@@ -177,6 +199,26 @@ class TestXMind {
         Sheet sheet = xMind.getFirstSheet();
         sheet.changeViewMode(ViewMode.OUTLINER);
         assertEquals(ViewMode.OUTLINER, sheet.getViewMode());
+    }
+
+    @Test
+    // Test get node by position
+    void testGetNodeByPosition() {
+        Sheet sheet = xMind.getFirstSheet();
+        Point positionClick = new Point(0, 0);
+        INode nodeInPosition = sheet.getNodeByPosition(positionClick);
+        assertNotNull(nodeInPosition);
+    }
+
+    @Test
+    // Test change structure of node
+    void testChangeStructure() {
+        Sheet sheet = xMind.getFirstSheet();
+        INode node = sheet.getRootTopic();
+        sheet.changeStructure(node, Structure.LOGIC_CHART);
+        assertEquals(Structure.LOGIC_CHART, node.getStructure());
+        assertEquals(Structure.LOGIC_CHART, node.getChildren().get(0).getStructure());
+
     }
 
 

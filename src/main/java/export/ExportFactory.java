@@ -1,4 +1,6 @@
 package export;
+import settings.FileType;
+
 import java.util.EnumMap;
 import java.util.Map;
 
