@@ -164,13 +164,13 @@ class TestXMind {
         assertTrue(sheet.isBalanced());
     }
 
-//    @Test
-//    // Test change view mode
-//    void testChangeViewMode() {
-//        Sheet sheet = xMind.getFirstSheet();
-//        sheet.changeViewMode(ViewMode.OUTLINER);
-//        assertEquals(ViewMode.RIGHT, sheet.getViewMode());
-//    }
+    @Test
+    // Test change view mode
+    void testChangeViewMode() {
+        Sheet sheet = xMind.getFirstSheet();
+        sheet.changeViewMode(ViewMode.OUTLINER);
+        assertEquals(ViewMode.OUTLINER, sheet.getViewMode());
+    }
 
 
 }

@@ -8,6 +8,8 @@ public class Sheet {
 
     HashSet<RelationShip> nodes = new HashSet<>();
 
+    // Default view mode is MINDMAP
+    private ViewMode viewMode = ViewMode.MINDMAP;
 
 
     public Sheet(String name) {
@@ -117,5 +119,13 @@ public class Sheet {
 
     public void balanceMap() {
         isBalanced = true;
+    }
+
+    public void changeViewMode(ViewMode viewMode) {
+        this.viewMode = viewMode;
+    }
+
+    public ViewMode getViewMode() {
+        return viewMode;
     }
 }
