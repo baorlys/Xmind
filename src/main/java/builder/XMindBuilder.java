@@ -1,3 +1,9 @@
+package builder;
+
+import board.Board;
+import board.Sheet;
+import node.Node;
+import node.NodeType;
 
 public class XMindBuilder {
     Board xmind;

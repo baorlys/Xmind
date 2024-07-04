@@ -1,8 +1,15 @@
+import board.Board;
+import board.Sheet;
+import board.ViewMode;
+import builder.XMindBuilder;
+import export.ExportStatus;
+import export.FileType;
+import node.Node;
+import node.NodeType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TestXMind {
     Board xMind;

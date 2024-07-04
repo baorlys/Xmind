@@ -1,3 +1,5 @@
+package node;
+
 public enum NodeType {
     ROOT,
     MAIN_TOPIC,

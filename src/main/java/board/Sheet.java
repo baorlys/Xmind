@@ -1,3 +1,9 @@
+package board;
+
+import node.AddNodeFactory;
+import node.Node;
+import node.NodeType;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
