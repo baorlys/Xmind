@@ -24,9 +24,12 @@ public class ExportTXT implements ITypeExport {
         String result = dfsRecursive(sheet.getRootTopic());
         // Create a temporary file
         try {
-            File tempFile = File.createTempFile(filename, ".txt");
+            // Get the system's temporary directory
+            String tempDir = System.getProperty("java.io.tmpdir");
+            File tempFile = File.createTempFile(filename, ".txt", new File(tempDir));
             writeToFile(tempFile, result);
             performDesktopAction(tempFile, this::editFile);
+            tempFile.deleteOnExit();
         } catch (IOException e) {
             throw new ExceptionExportFile("Error while exporting to TXT", e);
         }
