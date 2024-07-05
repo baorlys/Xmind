@@ -1,5 +1,6 @@
 package board;
 
+import exceptions.ExceptionExportFile;
 import export.ExportFactory;
 import settings.ExportStatus;
 import settings.FileType;
@@ -31,7 +32,7 @@ public class Board {
         return sheets.get(0);
     }
 
-    public ExportStatus export(Sheet sheet, FileType type, String filename) {
+    public ExportStatus export(Sheet sheet, FileType type, String filename) throws ExceptionExportFile {
         ITypeExport export = ExportFactory.getExport(type);
         return export.export(sheet, filename);
     }

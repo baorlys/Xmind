@@ -83,7 +83,7 @@ public class Sheet {
 
         INode nextNode = getNodeByPosition(positionNextNode);
         if (nextNode == null) {
-            return;
+            moveNode((IChildNode) currentNode);
         }
 
         moveNode((IChildNode) currentNode, nextNode);

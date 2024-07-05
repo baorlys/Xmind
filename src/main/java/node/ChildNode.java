@@ -17,6 +17,8 @@ public class ChildNode extends Node implements IChildNode{
     public void moveToParent(INode newParent) {
         this.parent.removeChild(this);
         this.parent = newParent;
+        NodeType nodeType = AddNodeFactory.getChildNodeType(newParent.getType());
+        this.setType(nodeType);
         newParent.addChild(this);
     }
 

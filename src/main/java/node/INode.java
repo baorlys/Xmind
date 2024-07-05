@@ -19,4 +19,6 @@ public interface INode {
     void changeStructure(Structure structure);
 
     Structure getStructure();
+
+    String getText();
 }

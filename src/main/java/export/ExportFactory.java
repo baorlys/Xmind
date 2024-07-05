@@ -14,6 +14,7 @@ public class ExportFactory {
     static {
         exports.put(FileType.PNG, new ExportPNG());
         exports.put(FileType.PDF, new ExportPDF());
+        exports.put(FileType.TXT, new ExportTXT());
     }
 
     public static ITypeExport getExport(FileType type) {

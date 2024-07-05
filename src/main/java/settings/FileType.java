@@ -2,5 +2,6 @@ package settings;
 
 public enum FileType {
     PNG,
-    PDF
+    PDF,
+    TXT;
 }

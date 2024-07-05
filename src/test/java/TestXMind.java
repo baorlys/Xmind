@@ -1,6 +1,7 @@
 import board.Board;
 import board.Sheet;
 import builder.XMindBuilder;
+import exceptions.ExceptionExportFile;
 import node.INode;
 import point.Point;
 import settings.*;
@@ -44,7 +45,7 @@ class TestXMind {
 
     @Test
     // Test export xMind to png file
-    void testExportPNG() {
+    void testExportPNG() throws ExceptionExportFile {
         Sheet sheet = xMind.getFirstSheet();
         ExportStatus exportStatus = xMind.export(sheet, FileType.PNG, "filename");
         assertEquals(ExportStatus.SUCCESS, exportStatus);
@@ -52,9 +53,23 @@ class TestXMind {
 
     @Test
     // Test export xMind to pdf file
-    void testExportPDF() {
+    void testExportPDF() throws ExceptionExportFile {
         Sheet sheet = xMind.getFirstSheet();
         ExportStatus exportStatus = xMind.export(sheet, FileType.PDF, "filename");
+        assertEquals(ExportStatus.SUCCESS, exportStatus);
+    }
+
+    @Test
+    // Test export xMind to test
+    void testExportTXT() throws ExceptionExportFile {
+        Sheet sheet = xMind.getFirstSheet();
+        INode node = sheet.getRootTopic();
+        IChildNode newMainTopic = sheet.addNodeToCurrentTopic(node);
+        IChildNode newSubTopic = sheet.addNodeToCurrentTopic(newMainTopic);
+        sheet.addNodeToCurrentTopic(newSubTopic);
+        sheet.addNodeToCurrentTopic(newSubTopic);
+        sheet.addNodeToCurrentTopic(node);
+        ExportStatus exportStatus = xMind.export(sheet, FileType.TXT, "filename");
         assertEquals(ExportStatus.SUCCESS, exportStatus);
     }
 
@@ -128,8 +143,11 @@ class TestXMind {
         Point positionCurrentNode = new Point(0, 0);
         Point positionNextNode = new Point(0, 1);
         sheet.moveNode(positionCurrentNode, positionNextNode);
-        assertEquals(6, rootTopic.getChildren().size());
-        assertEquals(0, newMainTopic.getChildren().size());
+        INode nextNode = sheet.getNodeByPosition(positionNextNode);
+        assertEquals(1, nextNode.getChildren().size());
+        assertEquals(NodeType.SUB_TOPIC, nextNode.getType());
+        INode currentNode = sheet.getNodeByPosition(positionCurrentNode);
+        assertEquals(NodeType.SUB_TOPIC, currentNode.getType());
     }
 
     @Test
@@ -220,6 +238,8 @@ class TestXMind {
         assertEquals(Structure.LOGIC_CHART, node.getChildren().get(0).getStructure());
 
     }
+
+
 
 
 }
