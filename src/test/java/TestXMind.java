@@ -90,6 +90,7 @@ class TestXMind {
         Sheet sheet = xMind.getFirstSheet();
         Point positionClick = new Point(0, 0);
         INode nodeInPosition = sheet.getNodeByPosition(positionClick);
+        sheet.addNodeToCurrentTopic(nodeInPosition);
         assertEquals(1, nodeInPosition.getChildren().size());
     }
 
