@@ -7,7 +7,6 @@ import node.*;
 import settings.PropertiesLoader;
 import shape.Point;
 import settings.NodeType;
-import settings.Structure;
 import settings.ViewMode;
 
 import java.util.*;
@@ -24,7 +23,7 @@ public class Sheet {
     private String name;
     private IRootNode rootTopic;
 
-    HashSet<RelationShip> nodes;
+    HashSet<Relationship> nodes;
 
     private ViewMode viewMode;
 
@@ -37,16 +36,16 @@ public class Sheet {
         propertiesLoader = PropertiesLoader.getInstance();
         isBalanced = true;
         viewMode = ViewMode.valueOf(propertiesLoader.getProperty("default.sheet.view.mode"));
-        this.addNewNode(rootTopic);
+        this.addNodeToList(rootTopic);
     }
 
 
-    public void addNewNode(INode node)  {
-        nodes.add(new RelationShip(node));
+    public void addNodeToList(INode node)  {
+        nodes.add(new Relationship(node));
     }
 
     public List<INode> getAllNodes() {
-        return nodes.stream().map(RelationShip::getNode).collect(Collectors.toList());
+        return nodes.stream().map(Relationship::getNode).collect(Collectors.toList());
     }
 
     public IChildNode addNodeFrom(INode currentTopic) throws ExceptionOpenFile {
@@ -56,7 +55,7 @@ public class Sheet {
         IChildNode newNode = new ChildNode(childNodeType.toString().replace("_"," ").toLowerCase()
                 + " " + (nodeCount + 1), childNodeType, currentTopic);
         currentTopic.addChild(newNode);
-        this.addNewNode(newNode);
+        this.addNodeToList(newNode);
         return newNode;
     }
 
@@ -65,16 +64,16 @@ public class Sheet {
         nodes.removeIf(listNode -> listNode.getNode().equals(topic));
     }
 
-    public void moveNode(IChildNode nodeIsMoved, INode parentNode) {
-        nodeIsMoved.moveToParent(parentNode);
+    public void moveNode(IChildNode nodeMoved, INode destinationNode) {
+        nodeMoved.moveTo(destinationNode);
     }
-    public void moveNode(IChildNode nodeIsMoved) {
-        nodeIsMoved.removeParent();
+    public void moveNode(IChildNode nodeMoved) {
+        nodeMoved.removeParent();
     }
 
-    public void moveNode(Point positionCurrentNode, Point positionNextNode) {
-        INode currentNode = getNodeByPosition(positionCurrentNode);
-        INode nextNode = getNodeByPosition(positionNextNode);
+    public void moveNode(Point positionNodeMoved, Point positionDestination) {
+        INode currentNode = getNodeByPosition(positionNodeMoved);
+        INode nextNode = getNodeByPosition(positionDestination);
         Optional.ofNullable(currentNode)
                 .filter(node -> node.getType() != NodeType.ROOT)
                 .ifPresent(node -> Optional.ofNullable(nextNode)
@@ -94,26 +93,19 @@ public class Sheet {
                 });
     }
 
-
-    public INode getNode(INode node) {
-        return nodes.stream().map(RelationShip::getNode)
-                .filter(listNode -> listNode.equals(node))
-                .findFirst().orElse(null);
-    }
-
-    public RelationShip getRelationships(INode node) {
+    public Relationship getRelationshipsOf(INode node) {
         return nodes.stream().filter(listNode -> listNode.getNode().equals(node))
                 .findFirst().orElse(null);
     }
 
-    public void removeRelationship(INode node1, INode node2) {
-        nodes.stream().filter(listNode -> listNode.getNode().equals(node1))
-                .forEach(listNode -> listNode.removeRelation(node2));
+    public void removeRelationship(INode fromNode, INode toNode) {
+        nodes.stream().filter(listNode -> listNode.getNode().equals(fromNode))
+                .forEach(listNode -> listNode.removeRelation(toNode));
     }
 
-    public void changeRelationshipName(INode node1, INode node2, String relationshipName) {
-        nodes.stream().filter(listNode -> listNode.getNode().equals(node1))
-                .forEach(listNode -> listNode.changeRelationName(node2, relationshipName));
+    public void changeRelationshipName(INode fromNode, INode toNode, String relationshipName) {
+        nodes.stream().filter(listNode -> listNode.getNode().equals(fromNode))
+                .forEach(listNode -> listNode.changeRelationName(toNode, relationshipName));
 
     }
 
@@ -128,22 +120,17 @@ public class Sheet {
     }
 
 
-    public INode getNodeByPosition(Point positionClick) {
-        return nodes.stream().map(RelationShip::getNode)
-                .filter(node -> node.getShape().isContainPoint(positionClick))
+    public INode getNodeByPosition(Point position) {
+        return nodes.stream().map(Relationship::getNode)
+                .filter(node -> node.getShape().isContainPoint(position))
                 .findFirst().orElse(null);
-    }
-
-
-    public void changeStructure(INode node, Structure structure) {
-        node.changeStructure(structure);
     }
 
 
     public IChildNode insertFloatTopic(Point center) throws ExceptionOpenFile {
         IChildNode floatTopic = new ChildNode(NodeType.FLOATING_TOPIC.toString().replace("_"," ").toLowerCase()
                 , NodeType.FLOATING_TOPIC, center);
-        this.addNewNode(floatTopic);
+        this.addNodeToList(floatTopic);
         return floatTopic;
     }
 }

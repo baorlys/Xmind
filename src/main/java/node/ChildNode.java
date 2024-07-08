@@ -42,7 +42,7 @@ public class ChildNode extends Node implements IChildNode{
     }
 
     @Override
-    public void moveToParent(INode newParent) {
+    public void moveTo(INode newParent) {
         this.parent.removeChild(this);
         this.parent = newParent;
         NodeType nodeType = AddNodeFactory.getChildNodeType(newParent.getType());

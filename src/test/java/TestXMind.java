@@ -11,6 +11,8 @@ import node.IRootNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestXMind {
@@ -75,6 +77,15 @@ class TestXMind {
     }
 
     @Test
+    // Test remove sheet from board
+    void testRemoveSheet() throws Exception {
+        xMind.addSheet();
+        assertEquals(2, xMind.getSheets().stream().count());
+        xMind.removeSheet(1);
+        assertEquals(1, xMind.getSheets().stream().count());
+    }
+
+    @Test
     // Test export xMind to png file
     void testExportPNG() {
         Sheet sheet = xMind.getFirstSheet();
@@ -109,9 +120,9 @@ class TestXMind {
         Sheet sheet = xMind.getFirstSheet();
         IRootNode rootTopic = sheet.getRootTopic();
         IChildNode newMainTopic = sheet.addNodeFrom(rootTopic);
-        assertEquals(NodeType.MAIN_TOPIC, sheet.getNode(newMainTopic).getType());
+        assertEquals(NodeType.MAIN_TOPIC, newMainTopic.getType());
         IChildNode newSubTopic = sheet.addNodeFrom(newMainTopic);
-        assertEquals(NodeType.SUB_TOPIC, sheet.getNode(newSubTopic).getType());
+        assertEquals(NodeType.SUB_TOPIC, newSubTopic.getType());
     }
 
     @Test
@@ -127,8 +138,8 @@ class TestXMind {
         // Test get node by position
     void testGetNodeByPosition() {
         Sheet sheet = xMind.getFirstSheet();
-        Point positionClick = new Point(960, 540);
-        INode nodeInPosition = sheet.getNodeByPosition(positionClick);
+        Point position = new Point(960, 540);
+        INode nodeInPosition = sheet.getNodeByPosition(position);
         assertNotNull(nodeInPosition);
     }
 
@@ -142,7 +153,7 @@ class TestXMind {
     }
 
     @Test
-    // Test first main topic position
+        // Test first main topic position
     void testGetFirstMainTopicPosition() {
         Sheet sheet = xMind.getFirstSheet();
         IRootNode rootTopic = sheet.getRootTopic();
@@ -156,8 +167,8 @@ class TestXMind {
     // Test add child node to node by node position
     void testAddNodeByPosition() throws ExceptionOpenFile {
         Sheet sheet = xMind.getFirstSheet();
-        Point positionClick = new Point(960, 540);
-        INode nodeInPosition = sheet.getNodeByPosition(positionClick);
+        Point position = new Point(960, 540);
+        INode nodeInPosition = sheet.getNodeByPosition(position);
         sheet.addNodeFrom(nodeInPosition);
         assertEquals(5, nodeInPosition.getChildren().stream().count());
     }
@@ -169,7 +180,7 @@ class TestXMind {
         IRootNode rootTopic = sheet.getRootTopic();
         IChildNode mainTopic = rootTopic.getChildren().get(0);
         mainTopic.removeParent();
-        assertEquals(NodeType.FLOATING_TOPIC, sheet.getNode(mainTopic).getType());
+        assertEquals(NodeType.FLOATING_TOPIC, mainTopic.getType());
     }
 
     @Test
@@ -177,7 +188,7 @@ class TestXMind {
     void testInsertFloatTopic() throws ExceptionOpenFile {
         Sheet sheet = xMind.getFirstSheet();
         IChildNode floatTopic = sheet.insertFloatTopic(new Point(200, 300));
-        assertEquals(NodeType.FLOATING_TOPIC, sheet.getNode(floatTopic).getType());
+        assertEquals(NodeType.FLOATING_TOPIC, floatTopic.getType());
     }
 
     @Test
@@ -186,7 +197,7 @@ class TestXMind {
         Sheet sheet = xMind.getFirstSheet();
         IChildNode newFloatTopic = sheet.insertFloatTopic(new Point(200, 300));
         IChildNode newSubTopic = sheet.addNodeFrom(newFloatTopic);
-        assertEquals(NodeType.SUB_TOPIC, sheet.getNode(newSubTopic).getType());
+        assertEquals(NodeType.SUB_TOPIC, newSubTopic.getType());
     }
 
     @Test
@@ -246,7 +257,7 @@ class TestXMind {
         IChildNode newMainTopic = sheet.addNodeFrom(rootTopic);
         IChildNode newSubTopic = sheet.addNodeFrom(newMainTopic);
         sheet.createRelationship(newSubTopic, rootTopic);
-        assertTrue(sheet.getRelationships(newSubTopic).isRelated(rootTopic));
+        assertTrue(sheet.getRelationshipsOf(newSubTopic).isRelated(rootTopic));
     }
 
 
@@ -258,7 +269,7 @@ class TestXMind {
         IChildNode newMainTopic = sheet.addNodeFrom(rootTopic);
         sheet.createRelationship(newMainTopic, rootTopic);
         sheet.removeRelationship(newMainTopic, rootTopic);
-        assertFalse(sheet.getRelationships(newMainTopic).isRelated(rootTopic));
+        assertFalse(sheet.getRelationshipsOf(newMainTopic).isRelated(rootTopic));
     }
 
 
@@ -270,7 +281,7 @@ class TestXMind {
         IChildNode newMainTopic = sheet.addNodeFrom(rootTopic);
         sheet.createRelationship(newMainTopic, rootTopic);
         sheet.changeRelationshipName(newMainTopic, rootTopic, "new relationship name");
-        assertTrue(sheet.getRelationships(newMainTopic)
+        assertTrue(sheet.getRelationshipsOf(newMainTopic)
                 .getRelation()
                 .stream()
                 .anyMatch(relationMap -> relationMap.containsValue("new relationship name")));
@@ -299,12 +310,29 @@ class TestXMind {
     void testChangeStructure() {
         Sheet sheet = xMind.getFirstSheet();
         INode node = sheet.getRootTopic();
-        sheet.changeStructure(node, Structure.LOGIC_CHART);
+        node.changeStructure(Structure.LOGIC_CHART);
         assertEquals(Structure.LOGIC_CHART, node.getStructure());
         assertEquals(Structure.LOGIC_CHART, node.getChildren().get(0).getStructure());
-
     }
 
+
+    @Test
+    // Test save board
+    void testSaveBoard() {
+        xMind.save("saveBoard");
+        assertTrue(xMind.isSaved());
+    }
+
+    @Test
+    // Test open board
+    void testOpenBoard() throws ExceptionOpenFile, IOException, ClassNotFoundException {
+        xMind.addSheet();
+        xMind.save("saveBoard");
+        Board newBoard = new XMindBuilder()
+                .open("saveBoard")
+                .build();
+        assertEquals(1, newBoard.getSheets().stream().count());
+    }
 
 
 

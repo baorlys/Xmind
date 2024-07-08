@@ -4,6 +4,7 @@ import exceptions.ExceptionOpenFile;
 import node.IRootNode;
 import settings.PropertiesLoader;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
@@ -47,5 +48,10 @@ public class XMindBuilder {
 
     public XMindBuilder initDefaultXMind() {
         return initBoard().initDefaultTopics();
+    }
+
+    public XMindBuilder open(String filename) throws IOException, ClassNotFoundException {
+        Board.open(filename);
+        return this;
     }
 }

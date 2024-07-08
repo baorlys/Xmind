@@ -12,7 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class RelationShip {
+public class Relationship {
     private INode node;
 
     private List<HashMap<INode,String>> relation;
@@ -21,7 +21,7 @@ public class RelationShip {
 
 
 
-    public RelationShip(INode node){
+    public Relationship(INode node){
         this.node = node;
         this.relation = new ArrayList<>();
     }

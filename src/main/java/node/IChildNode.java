@@ -4,7 +4,7 @@ package node;
 import java.util.List;
 
 public interface IChildNode extends INode {
-    void moveToParent(INode newParent);
+    void moveTo(INode newParent);
     void removeParent();
 
     List<IChildNode> getChildrenOfParent();
