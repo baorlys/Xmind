@@ -1,3 +1,5 @@
+package xmind;
+
 import board.Board;
 import board.Sheet;
 import board.XMindBuilder;
