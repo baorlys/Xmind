@@ -1,46 +1,45 @@
-package board;
+package xmind;
 
-import exceptions.ExceptionOpenFile;
+import com.fasterxml.jackson.annotation.*;
+import config.Configuration;
 import lombok.Getter;
 import lombok.Setter;
 import node.*;
-import settings.PropertiesLoader;
 import shape.Point;
-import settings.NodeType;
-import settings.ViewMode;
-
+import config.NodeType;
+import config.ViewMode;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Sheet {
-    private Logger logger = Logger.getAnonymousLogger();
-    private boolean isBalanced;
-    private PropertiesLoader propertiesLoader;
-
+    @JsonProperty("id")
+    private String id;
     private String name;
+
+    @JsonBackReference
     private IRootNode rootTopic;
 
+    @JsonManagedReference
     HashSet<Relationship> nodes;
-
     private ViewMode viewMode;
 
+    private Configuration configuration = new Configuration();
 
 
-    public Sheet(String name, IRootNode rootTopic) throws ExceptionOpenFile {
+
+    public Sheet(String name, IRootNode rootTopic) {
         this.name = name;
         this.rootTopic = rootTopic;
         this.nodes = new HashSet<>();
-        propertiesLoader = PropertiesLoader.getInstance();
-        isBalanced = true;
-        viewMode = ViewMode.valueOf(propertiesLoader.getProperty("default.sheet.view.mode"));
+        viewMode = ViewMode.valueOf(configuration.getDefaultSheetViewMode());
         this.addNodeToList(rootTopic);
     }
 
 
-    public void addNodeToList(INode node)  {
+    public void addNodeToList(INode node) {
         nodes.add(new Relationship(node));
     }
 
@@ -48,7 +47,7 @@ public class Sheet {
         return nodes.stream().map(Relationship::getNode).collect(Collectors.toList());
     }
 
-    public IChildNode addNodeFrom(INode currentTopic) throws ExceptionOpenFile {
+    public IChildNode addNodeFrom(INode currentTopic)  {
         NodeType nodeType = currentTopic.getType();
         int nodeCount = currentTopic.getChildren().size();
         NodeType childNodeType = AddNodeFactory.getChildNodeType(nodeType);
@@ -84,13 +83,7 @@ public class Sheet {
 
     public void createRelationship(INode fromNode, INode toNode) {
         nodes.stream().filter(listNode -> listNode.getNode().equals(fromNode))
-                .forEach(listNode -> {
-                    try {
-                        listNode.addRelation(toNode);
-                    } catch (ExceptionOpenFile e) {
-                       logger.warning(e.getMessage());
-                    }
-                });
+                .forEach(listNode -> listNode.addRelation(toNode));
     }
 
     public Relationship getRelationshipsOf(INode node) {
@@ -127,10 +120,12 @@ public class Sheet {
     }
 
 
-    public IChildNode insertFloatTopic(Point center) throws ExceptionOpenFile {
+    public IChildNode insertFloatTopic(Point center)  {
         IChildNode floatTopic = new ChildNode(NodeType.FLOATING_TOPIC.toString().replace("_"," ").toLowerCase()
                 , NodeType.FLOATING_TOPIC, center);
         this.addNodeToList(floatTopic);
         return floatTopic;
     }
+
+
 }

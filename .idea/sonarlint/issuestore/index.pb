@@ -1,6 +1,4 @@
 
-L
-src/test/java/TestXMind.java,6\c\6c1cbcca87258c6bb47154a97295562567e5faa6
 7
 pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec
 X
@@ -23,8 +21,6 @@ T
 $src/main/java/settings/ViewMode.java,4\1\41262c625c14acb6fc3b8224604ed27710b00b9b
 Q
 !src/main/java/node/ChildNode.java,8\f\8f55b9090c517ed09d0d6c7fb65c05c6c1a33a97
-U
-%src/main/java/export/ITypeExport.java,4\2\42069e666413047296f7b4963e85a1f19762a6c4
 T
 $src/main/java/settings/FileType.java,7\5\75059c0c9f7dc0d3a1838b7ee354a7eb50e29930
 N
@@ -39,8 +35,6 @@ V
 &src/main/java/node/AddNodeFactory.java,6\e\6e092c717e59f1b7081a268e0cb7bb09e0c4b8ee
 U
 %src/main/java/board/RelationShip.java,5\f\5f995bf6901df88c13c6436efec777bb9629916f
-N
-src/main/java/board/Board.java,f\1\f19d9182bc6164a66369d7d04312e177b6c53b74
 N
 src/main/java/board/Sheet.java,d\e\deeb91af9baa9d4c90156be28bbcbbdb16f3a498
 S
@@ -59,3 +53,17 @@ U
 ,src/main/java/settings/PropertiesLoader.java,9\3\93548e0142c2c4aa1622befb24d792f0b2e16970
 N
 src/main/java/shape/Point.java,d\0\d087b00f3a32fe54ace87c3171d65b023e5ec8dd
+W
+'src/main/java/export/ExportMessage.java,0\3\03fdaa07ae25450f38f1387e430885d82743c726
+Y
+)src/main/resources/application.properties,0\6\06f65155ec73600b9fc5c4dc2883d4bb84d8e284
+U
+%src/main/java/export/IExportable.java,9\7\97cf91579ad9025fe156cf24dc5f8f61a59d7ad8
+_
+/src/main/java/exceptions/ExceptionOpenFile.java,1\9\191d931ace839fa2e9a848491d36ccdd866150e1
+N
+src/main/java/board/Xmind.java,7\7\7760fdd76deb75c7eb6199782ceb005ae5455a25
+R
+"src/test/java/xmind/TestXMind.java,7\e\7e3e99bac27cf428c63566250b2f9d5ef67dea8e
+U
+%src/main/java/board/Relationship.java,c\b\cb8332e653824718a246e32f4cdbf3ff94fdf828

@@ -1,4 +1,4 @@
-package settings;
+package config;
 
 public enum Structure {
     MIND_MAP,

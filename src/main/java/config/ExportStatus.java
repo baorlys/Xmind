@@ -1,4 +1,4 @@
-package settings;
+package config;
 
 public enum ExportStatus {
     SUCCESS,

@@ -1,9 +1,9 @@
 package export;
 
-import board.Sheet;
+import xmind.Sheet;
 import node.IChildNode;
 import node.INode;
-import settings.ExportStatus;
+import config.ExportStatus;
 
 
 

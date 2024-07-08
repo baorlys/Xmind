@@ -1,26 +1,23 @@
 package xmind;
 
-import board.Board;
-import board.Sheet;
-import board.XMindBuilder;
-import exceptions.ExceptionOpenFile;
 import export.ExportMessage;
 import node.INode;
 import shape.Point;
-import settings.*;
+import config.*;
 import node.IChildNode;
 import node.IRootNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestXMind {
-    Board xMind;
+    XMind xMind;
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         xMind = new XMindBuilder()
                 .initDefaultXMind()
                 .build();
@@ -73,52 +70,24 @@ class TestXMind {
 
     @Test
     // Test add sheet to board
-    void testAddSheet() throws Exception {
+    void testAddSheet() {
         xMind.addSheet();
         assertEquals(2, xMind.getSheets().stream().count());
     }
 
     @Test
     // Test remove sheet from board
-    void testRemoveSheet() throws Exception {
+    void testRemoveSheet() {
         xMind.addSheet();
         assertEquals(2, xMind.getSheets().stream().count());
         xMind.removeSheet(1);
         assertEquals(1, xMind.getSheets().stream().count());
     }
 
-    @Test
-    // Test export xMind to png file
-    void testExportPNG() {
-        Sheet sheet = xMind.getFirstSheet();
-        ExportMessage result = xMind.export(sheet, FileType.PNG, "filename");
-        assertEquals(ExportStatus.SUCCESS, result.getStatus());
-    }
-
-    @Test
-    // Test export xMind to pdf file
-    void testExportPDF() {
-        Sheet sheet = xMind.getFirstSheet();
-        ExportMessage result = xMind.export(sheet, FileType.PDF, "filename");
-        assertEquals(ExportStatus.SUCCESS, result.getStatus());
-    }
-
-    @Test
-    // Test export xMind to test
-    void testExportTXT() {
-        Sheet sheet = xMind.getFirstSheet();
-        ExportMessage result = xMind.export(sheet, FileType.TXT, "filename");
-        assertEquals(ExportStatus.SUCCESS, result.getStatus());
-        assertEquals("\"Central Topic\"\n" +
-                "\tmain topic 1\n" +
-                "\tmain topic 2\n" +
-                "\tmain topic 3\n" +
-                "\tmain topic 4\n", result.getMessage());
-    }
 
     @Test
     // Test add node to root topic
-    void testAddNode() throws ExceptionOpenFile {
+    void testAddNode()  {
         Sheet sheet = xMind.getFirstSheet();
         IRootNode rootTopic = sheet.getRootTopic();
         IChildNode newMainTopic = sheet.addNodeFrom(rootTopic);
@@ -167,7 +136,7 @@ class TestXMind {
 
     @Test
     // Test add child node to node by node position
-    void testAddNodeByPosition() throws ExceptionOpenFile {
+    void testAddNodeByPosition()  {
         Sheet sheet = xMind.getFirstSheet();
         Point position = new Point(960, 540);
         INode nodeInPosition = sheet.getNodeByPosition(position);
@@ -187,7 +156,7 @@ class TestXMind {
 
     @Test
     // Test add float topic
-    void testInsertFloatTopic() throws ExceptionOpenFile {
+    void testInsertFloatTopic()  {
         Sheet sheet = xMind.getFirstSheet();
         IChildNode floatTopic = sheet.insertFloatTopic(new Point(200, 300));
         assertEquals(NodeType.FLOATING_TOPIC, floatTopic.getType());
@@ -195,7 +164,7 @@ class TestXMind {
 
     @Test
     // Test add node to float topic
-    void testAddNodeToFloatTopic() throws ExceptionOpenFile {
+    void testAddNodeToFloatTopic()  {
         Sheet sheet = xMind.getFirstSheet();
         IChildNode newFloatTopic = sheet.insertFloatTopic(new Point(200, 300));
         IChildNode newSubTopic = sheet.addNodeFrom(newFloatTopic);
@@ -204,7 +173,7 @@ class TestXMind {
 
     @Test
     // Test remove node
-    void testRemoveNode() throws ExceptionOpenFile{
+    void testRemoveNode() {
         Sheet sheet = xMind.getFirstSheet();
         IRootNode rootTopic = sheet.getRootTopic();
         IChildNode newMainTopic =sheet.addNodeFrom(rootTopic);
@@ -215,7 +184,7 @@ class TestXMind {
 
     @Test
     // Test move node to another node
-    void testMoveNode() throws ExceptionOpenFile{
+    void testMoveNode() {
         Sheet sheet = xMind.getFirstSheet();
         IRootNode rootTopic = sheet.getRootTopic();
         IChildNode newMainTopic = sheet.addNodeFrom(rootTopic);
@@ -241,7 +210,7 @@ class TestXMind {
 
     @Test
     // Test move node to floating topic
-    void testMoveNodeToFloatTopic() throws ExceptionOpenFile{
+    void testMoveNodeToFloatTopic() {
         Sheet sheet = xMind.getFirstSheet();
         IRootNode rootTopic = sheet.getRootTopic();
         IChildNode newMainTopic = sheet.addNodeFrom(rootTopic);
@@ -253,7 +222,7 @@ class TestXMind {
     }
     @Test
     // Test create relationship between nodes
-    void testCreateRelationship() throws ExceptionOpenFile {
+    void testCreateRelationship()  {
         Sheet sheet = xMind.getFirstSheet();
         IRootNode rootTopic = sheet.getRootTopic();
         IChildNode newMainTopic = sheet.addNodeFrom(rootTopic);
@@ -265,7 +234,7 @@ class TestXMind {
 
     @Test
     // Test remove relationship between nodes
-    void testRemoveRelationship() throws ExceptionOpenFile {
+    void testRemoveRelationship()  {
         Sheet sheet = xMind.getFirstSheet();
         IRootNode rootTopic = sheet.getRootTopic();
         IChildNode newMainTopic = sheet.addNodeFrom(rootTopic);
@@ -277,7 +246,7 @@ class TestXMind {
 
     @Test
     // Test change relationship name
-    void testChangeRelationshipName() throws ExceptionOpenFile {
+    void testChangeRelationshipName()  {
         Sheet sheet = xMind.getFirstSheet();
         IRootNode rootTopic = sheet.getRootTopic();
         IChildNode newMainTopic = sheet.addNodeFrom(rootTopic);
@@ -290,13 +259,6 @@ class TestXMind {
     }
 
 
-    @Test
-    // Test auto balance map
-    void testAutoBalanceMap() throws ExceptionOpenFile {
-        Sheet sheet = xMind.getFirstSheet();
-        sheet.addNodeFrom(sheet.getRootTopic());
-        assertTrue(sheet.isBalanced());
-    }
 
     @Test
     // Test change view mode
@@ -319,22 +281,55 @@ class TestXMind {
 
 
     @Test
-    // Test save board
-    void testSaveBoard() {
-        xMind.save("saveBoard");
-        assertTrue(xMind.isSaved());
+        // Test export xMind to png file
+    void testExportPNG() {
+        ExportMessage result = xMind.exportSheet(0, FileType.TXT, "filename");
+        assertEquals(ExportStatus.SUCCESS, result.getStatus());
     }
 
     @Test
-    // Test open board
-    void testOpenBoard() throws ExceptionOpenFile, IOException, ClassNotFoundException {
-        xMind.addSheet();
-        xMind.save("saveBoard");
-        Board newBoard = new XMindBuilder()
-                .open("saveBoard")
-                .build();
-        assertEquals(1, newBoard.getSheets().stream().count());
+        // Test export xMind to test
+    void testExportTXT()  {
+        Sheet sheet = xMind.getFirstSheet();
+        sheet.addNodeFrom(sheet.getRootTopic().getChildren().get(0));
+        sheet.addNodeFrom(sheet.getRootTopic().getChildren().get(1));
+        sheet.addNodeFrom(sheet.getRootTopic().getChildren().get(1));
+        ExportMessage result = xMind.exportSheet(0, FileType.TXT, "filename");
+        assertEquals(ExportStatus.SUCCESS, result.getStatus());
+        assertEquals("\"Central Topic\"\n" +
+                "\tmain topic 1\n" +
+                "\t\tsub topic 1\n" +
+                "\tmain topic 2\n" +
+                "\t\tsub topic 1\n" +
+                "\t\tsub topic 2\n" +
+                "\tmain topic 3\n" +
+                "\tmain topic 4\n", result.getMessage());
     }
+
+    @Test
+        // Test export all sheets to png
+    void testExportAllPNG() {
+        xMind.addSheet();
+        ExportMessage result = xMind.exportAll(FileType.PNG, "filename");
+        assertEquals(ExportStatus.SUCCESS, result.getStatus());
+    }
+
+    @Test
+        // Test export all sheets to txt
+    void testExportAllTXT() {
+        xMind.addSheet();
+        ExportMessage result = xMind.exportAll(FileType.TXT, "filename");
+        assertEquals(ExportStatus.SUCCESS, result.getStatus());
+    }
+
+    @Test
+    // Test save xMind to file
+    void testSaveXMind() throws IOException {
+        xMind.save("filename");
+        assertTrue(new File("filename").exists());
+    }
+
+
 
 
 

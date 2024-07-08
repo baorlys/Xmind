@@ -1,34 +1,36 @@
-package board;
+package xmind;
 
-import exceptions.ExceptionOpenFile;
+import com.fasterxml.jackson.annotation.*;
+import config.Configuration;
 import lombok.Getter;
 import lombok.Setter;
 import node.INode;
-import settings.PropertiesLoader;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 @Getter
 @Setter
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Relationship {
+    @JsonProperty("id")
+    private String id;
+    @JsonBackReference
     private INode node;
-
+    @JsonManagedReference
     private List<HashMap<INode,String>> relation;
 
-    private PropertiesLoader propertiesLoader;
+    private Configuration configuration;
 
 
-
-    public Relationship(INode node){
+    public Relationship(INode node) {
         this.node = node;
+        this.configuration = new Configuration();
         this.relation = new ArrayList<>();
     }
 
-    public void addRelation(INode node) throws ExceptionOpenFile {
-        propertiesLoader = PropertiesLoader.getInstance();
-        String defaultRelationshipName = propertiesLoader.getProperty("default.relationship.name");
+    public void addRelation(INode node) {
+        String defaultRelationshipName = configuration.getDefaultRelationshipName();
         HashMap<INode, String> relationMap = new HashMap<>();
         relationMap.put(node, defaultRelationshipName);
         relation.add(relationMap);

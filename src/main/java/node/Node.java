@@ -1,22 +1,24 @@
 package node;
 
-import exceptions.ExceptionOpenFile;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import config.Configuration;
 import lombok.Getter;
 import lombok.Setter;
-import settings.NodeType;
-import settings.PropertiesLoader;
-import settings.Structure;
+import config.NodeType;
+import config.Structure;
 import shape.Shape;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public abstract class Node implements INode {
-    private PropertiesLoader propertiesLoader;
     private String text;
 
+    @JsonManagedReference
     private List<IChildNode> children;
 
     private Shape shape;
@@ -25,12 +27,12 @@ public abstract class Node implements INode {
 
     private Structure structure;
 
-    protected Node(String text, NodeType type) throws ExceptionOpenFile {
+    private Configuration configuration = new Configuration();
+    protected Node(String text, NodeType type) {
         this.text = text;
         this.children = new ArrayList<>();
         this.type = type;
-        this.propertiesLoader = PropertiesLoader.getInstance();
-        this.structure = Structure.valueOf(propertiesLoader.getProperty("default.structure"));
+        this.structure = Structure.valueOf(configuration.getDefaultStructure());
     }
 
     public void setText(String text) {

@@ -1,7 +1,7 @@
 package export;
 
-import board.Sheet;
-import settings.ExportStatus;
+import xmind.Sheet;
+import config.ExportStatus;
 
 public class ExportPNG implements IExportable {
     @Override

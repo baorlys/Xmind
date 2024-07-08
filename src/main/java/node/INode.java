@@ -1,7 +1,7 @@
 package node;
 
-import settings.NodeType;
-import settings.Structure;
+import config.NodeType;
+import config.Structure;
 import shape.Shape;
 
 import java.util.List;
