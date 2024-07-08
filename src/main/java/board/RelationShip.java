@@ -1,10 +1,12 @@
 package board;
 
+import exceptions.ExceptionOpenFile;
 import lombok.Getter;
 import lombok.Setter;
 import node.INode;
 import settings.PropertiesLoader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +22,7 @@ public class RelationShip {
 
     private String defaultRelationshipName = propertiesLoader.getProperty("default.relationship.name");
 
-    public RelationShip(INode node) {
+    public RelationShip(INode node) throws ExceptionOpenFile, IOException {
         this.node = node;
         this.relation = new ArrayList<>();
     }

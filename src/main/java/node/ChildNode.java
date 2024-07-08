@@ -1,11 +1,13 @@
 package node;
 
+import exceptions.ExceptionOpenFile;
 import lombok.Getter;
 import lombok.Setter;
 import settings.NodeType;
 import shape.Point;
 import shape.Shape;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +17,7 @@ import java.util.Optional;
 public class ChildNode extends Node implements IChildNode{
     private INode parent;
 
-    public ChildNode(String text, NodeType nodeType, INode currentTopic) {
+    public ChildNode(String text, NodeType nodeType, INode currentTopic) throws ExceptionOpenFile, IOException {
         super(text, nodeType);
         this.parent = currentTopic;
         initShape();

@@ -1,5 +1,6 @@
 package node;
 
+import exceptions.ExceptionOpenFile;
 import lombok.Getter;
 import lombok.Setter;
 import settings.NodeType;
@@ -8,6 +9,7 @@ import settings.Structure;
 import shape.Point;
 import shape.Shape;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public abstract class Node implements INode {
     // Default structure is MIND_MAP
     private Structure structure = Structure.valueOf(propertiesLoader.getProperty("default.structure"));
 
-    protected Node(String text, NodeType type) {
+    protected Node(String text, NodeType type) throws IOException, ExceptionOpenFile {
         this.text = text;
         this.children = new ArrayList<>();
         this.type = type;

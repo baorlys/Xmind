@@ -1,8 +1,10 @@
 package board;
 
+import exceptions.ExceptionOpenFile;
 import node.IRootNode;
 import settings.PropertiesLoader;
 
+import java.io.IOException;
 import java.util.stream.IntStream;
 
 public class XMindBuilder {
@@ -15,7 +17,7 @@ public class XMindBuilder {
     private final int defaultNumberOfMainTopic = Integer.parseInt(propertiesLoader.getProperty("default.number.of.main.topic"));
 
 
-    public XMindBuilder() {
+    public XMindBuilder() throws Exception {
         xmind = new Board();
     }
 
@@ -24,21 +26,19 @@ public class XMindBuilder {
         return this;
     }
 
-    public XMindBuilder initBoard(String boardName) {
-        xmind.setName(boardName);
-        return this;
-    }
 
-    public XMindBuilder initDefaultSheet() {
-        xmind.addSheet();
-        return this;
-    }
 
 
     public XMindBuilder initDefaultTopics() {
         Sheet sheet = xmind.getFirstSheet();
         IRootNode rootTopic = sheet.getRootTopic();
-        IntStream.range(0, defaultNumberOfMainTopic).forEach(i -> sheet.addNodeToCurrentTopic(rootTopic));
+        IntStream.range(0, defaultNumberOfMainTopic).forEach(i -> {
+            try {
+                sheet.addNodeToCurrentTopic(rootTopic);
+            } catch (ExceptionOpenFile | IOException e) {
+                e.printStackTrace();
+            }
+        });
         return this;
     }
 
@@ -48,6 +48,6 @@ public class XMindBuilder {
 
 
     public XMindBuilder initDefaultXMind() {
-        return initBoard().initDefaultSheet().initDefaultTopics();
+        return initBoard().initDefaultTopics();
     }
 }

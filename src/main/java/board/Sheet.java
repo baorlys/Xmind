@@ -1,5 +1,6 @@
 package board;
 
+import exceptions.ExceptionOpenFile;
 import lombok.Getter;
 import lombok.Setter;
 import node.*;
@@ -9,6 +10,7 @@ import settings.NodeType;
 import settings.Structure;
 import settings.ViewMode;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,10 +27,10 @@ public class Sheet {
     private ViewMode viewMode = ViewMode.valueOf(propertiesLoader.getProperty("default.sheet.view.mode"));
 
 
-    public Sheet(String name) {
+    public Sheet(String name) throws IOException {
         this.name = name;
     }
-    public Sheet(String name, IRootNode rootTopic) {
+    public Sheet(String name, IRootNode rootTopic) throws ExceptionOpenFile, IOException {
         this.name = name;
         this.rootTopic = rootTopic;
         this.nodes = new HashSet<>();
@@ -36,7 +38,7 @@ public class Sheet {
     }
 
 
-    public void addNewNode(INode node) {
+    public void addNewNode(INode node) throws ExceptionOpenFile, IOException {
         nodes.add(new RelationShip(node));
     }
 
@@ -44,7 +46,7 @@ public class Sheet {
         return nodes.stream().map(RelationShip::getNode).collect(Collectors.toList());
     }
 
-    public IChildNode addNodeToCurrentTopic(INode currentTopic) {
+    public IChildNode addNodeToCurrentTopic(INode currentTopic) throws ExceptionOpenFile, IOException {
         NodeType nodeType = currentTopic.getType();
         int nodeCount = currentTopic.getChildren().size();
         NodeType childNodeType = AddNodeFactory.getChildNodeType(nodeType);
@@ -57,7 +59,7 @@ public class Sheet {
 
 
 
-    public IChildNode addFloatTopic() {
+    public IChildNode addFloatTopic() throws ExceptionOpenFile, IOException {
         IChildNode floatTopic = new ChildNode(NodeType.FLOATING_TOPIC.toString().replace("_"," ").toLowerCase()
               , NodeType.FLOATING_TOPIC, null);
         this.addNewNode(floatTopic);

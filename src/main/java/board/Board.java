@@ -22,9 +22,12 @@ public class Board {
     private PropertiesLoader propertiesLoader = PropertiesLoader.getInstance();
     private final String defaultRootTopicName = propertiesLoader.getProperty("default.root.topic.name");
 
+    public Board() throws Exception {
+        addSheet();
+    }
 
 
-    public void addSheet() {
+    public void addSheet() throws Exception {
         IRootNode rootTopic = new RootNode(defaultRootTopicName);
         int sheetNumber = sheets.size() + 1;
         sheets.add(new Sheet("Map " + sheetNumber, rootTopic));
