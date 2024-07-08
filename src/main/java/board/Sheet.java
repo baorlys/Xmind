@@ -10,35 +10,38 @@ import settings.NodeType;
 import settings.Structure;
 import settings.ViewMode;
 
-import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
 public class Sheet {
+    private Logger logger = Logger.getAnonymousLogger();
     private boolean isBalanced;
-    private PropertiesLoader propertiesLoader = PropertiesLoader.getInstance();
+    private PropertiesLoader propertiesLoader;
+
     private String name;
     private IRootNode rootTopic;
 
     HashSet<RelationShip> nodes;
 
-    private ViewMode viewMode = ViewMode.valueOf(propertiesLoader.getProperty("default.sheet.view.mode"));
+    private ViewMode viewMode;
 
 
-    public Sheet(String name) throws IOException, ExceptionOpenFile {
-        this.name = name;
-    }
-    public Sheet(String name, IRootNode rootTopic) throws ExceptionOpenFile, IOException {
+
+    public Sheet(String name, IRootNode rootTopic) throws ExceptionOpenFile {
         this.name = name;
         this.rootTopic = rootTopic;
         this.nodes = new HashSet<>();
+        propertiesLoader = PropertiesLoader.getInstance();
+        isBalanced = true;
+        viewMode = ViewMode.valueOf(propertiesLoader.getProperty("default.sheet.view.mode"));
         this.addNewNode(rootTopic);
     }
 
 
-    public void addNewNode(INode node) throws ExceptionOpenFile, IOException {
+    public void addNewNode(INode node)  {
         nodes.add(new RelationShip(node));
     }
 
@@ -46,7 +49,7 @@ public class Sheet {
         return nodes.stream().map(RelationShip::getNode).collect(Collectors.toList());
     }
 
-    public IChildNode addNodeToCurrentTopic(INode currentTopic) throws ExceptionOpenFile, IOException {
+    public IChildNode addNodeFrom(INode currentTopic) throws ExceptionOpenFile {
         NodeType nodeType = currentTopic.getType();
         int nodeCount = currentTopic.getChildren().size();
         NodeType childNodeType = AddNodeFactory.getChildNodeType(nodeType);
@@ -55,15 +58,6 @@ public class Sheet {
         currentTopic.addChild(newNode);
         this.addNewNode(newNode);
         return newNode;
-    }
-
-
-
-    public IChildNode addFloatTopic() throws ExceptionOpenFile, IOException {
-        IChildNode floatTopic = new ChildNode(NodeType.FLOATING_TOPIC.toString().replace("_"," ").toLowerCase()
-              , NodeType.FLOATING_TOPIC, null);
-        this.addNewNode(floatTopic);
-        return floatTopic;
     }
 
     public void removeNode(IChildNode topic) {
@@ -80,22 +74,24 @@ public class Sheet {
 
     public void moveNode(Point positionCurrentNode, Point positionNextNode) {
         INode currentNode = getNodeByPosition(positionCurrentNode);
-        if (currentNode == null || currentNode.getType() == NodeType.ROOT) {
-            return;
-        }
-
         INode nextNode = getNodeByPosition(positionNextNode);
-        if (nextNode == null) {
-            moveNode((IChildNode) currentNode);
-        }
-
-        moveNode((IChildNode) currentNode, nextNode);
+        Optional.ofNullable(currentNode)
+                .filter(node -> node.getType() != NodeType.ROOT)
+                .ifPresent(node -> Optional.ofNullable(nextNode)
+                        .ifPresentOrElse(node1 -> moveNode((IChildNode) currentNode, nextNode),
+                                () -> moveNode((IChildNode) currentNode)));
 
     }
 
     public void createRelationship(INode fromNode, INode toNode) {
         nodes.stream().filter(listNode -> listNode.getNode().equals(fromNode))
-                .forEach(listNode -> listNode.addRelation(toNode));
+                .forEach(listNode -> {
+                    try {
+                        listNode.addRelation(toNode);
+                    } catch (ExceptionOpenFile e) {
+                       logger.warning(e.getMessage());
+                    }
+                });
     }
 
 
@@ -122,9 +118,6 @@ public class Sheet {
     }
 
 
-    public void balanceMap() {
-        isBalanced = true;
-    }
 
     public void changeViewMode(ViewMode viewMode) {
         this.viewMode = viewMode;
@@ -147,4 +140,10 @@ public class Sheet {
     }
 
 
+    public IChildNode insertFloatTopic(Point center) throws ExceptionOpenFile {
+        IChildNode floatTopic = new ChildNode(NodeType.FLOATING_TOPIC.toString().replace("_"," ").toLowerCase()
+                , NodeType.FLOATING_TOPIC, center);
+        this.addNewNode(floatTopic);
+        return floatTopic;
+    }
 }

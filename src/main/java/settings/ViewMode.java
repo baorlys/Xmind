@@ -1,5 +1,5 @@
 package settings;
 
 public enum ViewMode {
-    MIND_MAP, OUTLINER
+    MIND_MAP, OUT_LINER
 }

@@ -3,9 +3,9 @@ package export;
 import board.Sheet;
 import settings.ExportStatus;
 
-public class ExportPDF implements ITypeExport {
+public class ExportPDF implements IExportable {
     @Override
-    public ExportStatus export(Sheet sheet, String filename) {
-        return ExportStatus.SUCCESS;
+    public ExportMessage export(Sheet sheet, String filename) {
+        return new ExportMessage(ExportStatus.SUCCESS, "Exported to PDF");
     }
 }

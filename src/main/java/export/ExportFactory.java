@@ -5,7 +5,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class ExportFactory {
-    private static final Map<FileType, ITypeExport> exports = new EnumMap<>(FileType.class);
+    private static final Map<FileType, IExportable> exports = new EnumMap<>(FileType.class);
     private ExportFactory() {
 
     }
@@ -17,7 +17,7 @@ public class ExportFactory {
         exports.put(FileType.TXT, new ExportTXT());
     }
 
-    public static ITypeExport getExport(FileType type) {
+    public static IExportable getExport(FileType type) {
         return exports.get(type);
     }
 }

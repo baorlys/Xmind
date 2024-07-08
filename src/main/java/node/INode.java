@@ -21,4 +21,6 @@ public interface INode {
     Structure getStructure();
 
     String getText();
+
+    void setText(String text);
 }

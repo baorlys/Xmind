@@ -1,12 +1,12 @@
 package board;
 
-import exceptions.ExceptionExportFile;
+import exceptions.ExceptionOpenFile;
 import export.ExportFactory;
+import export.ExportMessage;
+import export.IExportable;
 import node.IRootNode;
 import node.RootNode;
-import settings.ExportStatus;
 import settings.FileType;
-import export.ITypeExport;
 import lombok.Getter;
 import lombok.Setter;
 import settings.PropertiesLoader;
@@ -22,12 +22,12 @@ public class Board {
     private PropertiesLoader propertiesLoader = PropertiesLoader.getInstance();
     private final String defaultRootTopicName = propertiesLoader.getProperty("default.root.topic.name");
 
-    public Board() throws Exception {
+    public Board() throws ExceptionOpenFile {
         addSheet();
     }
 
 
-    public void addSheet() throws Exception {
+    public void addSheet() throws ExceptionOpenFile {
         IRootNode rootTopic = new RootNode(defaultRootTopicName);
         int sheetNumber = sheets.size() + 1;
         sheets.add(new Sheet("Map " + sheetNumber, rootTopic));
@@ -39,8 +39,8 @@ public class Board {
         return sheets.get(0);
     }
 
-    public ExportStatus export(Sheet sheet, FileType type, String filename) throws ExceptionExportFile {
-        ITypeExport export = ExportFactory.getExport(type);
+    public ExportMessage export(Sheet sheet, FileType type, String filename) {
+        IExportable export = ExportFactory.getExport(type);
         return export.export(sheet, filename);
     }
 }

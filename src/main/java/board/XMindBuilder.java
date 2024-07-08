@@ -4,12 +4,11 @@ import exceptions.ExceptionOpenFile;
 import node.IRootNode;
 import settings.PropertiesLoader;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 public class XMindBuilder {
-    Board xmind;
+    Board xMind;
     Logger logger = Logger.getAnonymousLogger();
     PropertiesLoader propertiesLoader = PropertiesLoader.getInstance();
 
@@ -18,25 +17,23 @@ public class XMindBuilder {
     private final int defaultNumberOfMainTopic = Integer.parseInt(propertiesLoader.getProperty("default.number.of.main.topic"));
 
 
-    public XMindBuilder() throws Exception {
-        xmind = new Board();
+    public XMindBuilder() throws ExceptionOpenFile {
+        xMind = new Board();
     }
 
     public XMindBuilder initBoard() {
-        xmind.setName(defaultBoardName);
+        xMind.setName(defaultBoardName);
         return this;
     }
 
 
-
-
     public XMindBuilder initDefaultTopics() {
-        Sheet sheet = xmind.getFirstSheet();
+        Sheet sheet = xMind.getFirstSheet();
         IRootNode rootTopic = sheet.getRootTopic();
         IntStream.range(0, defaultNumberOfMainTopic).forEach(i -> {
             try {
-                sheet.addNodeToCurrentTopic(rootTopic);
-            } catch (ExceptionOpenFile | IOException e) {
+                sheet.addNodeFrom(rootTopic);
+            } catch (ExceptionOpenFile e) {
                 logger.warning(e.getMessage());
             }
         });
@@ -44,7 +41,7 @@ public class XMindBuilder {
     }
 
     public Board build() {
-        return xmind;
+        return xMind;
     }
 
 

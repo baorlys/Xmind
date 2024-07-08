@@ -2,7 +2,7 @@ package exceptions;
 
 
 public class ExceptionOpenFile extends Exception {
-    public ExceptionOpenFile(String message) {
+    public ExceptionOpenFile(Exception message) {
         super(message);
     }
 }

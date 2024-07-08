@@ -5,12 +5,11 @@ import settings.NodeType;
 import shape.Point;
 import shape.Shape;
 
-import java.io.IOException;
 
 public class RootNode extends Node implements IRootNode {
     private static final NodeType NODE_TYPE = NodeType.ROOT;
 
-    public RootNode(String text) throws ExceptionOpenFile, IOException {
+    public RootNode(String text) throws ExceptionOpenFile {
         super(text,NODE_TYPE);
         initShape();
     }

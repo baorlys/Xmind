@@ -1,58 +1,21 @@
 package export;
 
 import board.Sheet;
-import exceptions.ExceptionExportFile;
 import node.IChildNode;
 import node.INode;
 import settings.ExportStatus;
 
-import java.awt.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
-public class ExportTXT implements ITypeExport {
 
-    // Functional interface for desktop actions
-    @FunctionalInterface
-    private interface DesktopAction {
-        void perform(File file) throws IOException;
-    }
+public class ExportTXT implements IExportable {
+
 
     @Override
-    public ExportStatus export(Sheet sheet, String filename) throws ExceptionExportFile {
+    public ExportMessage export(Sheet sheet, String filename) {
         String result = dfsRecursive(sheet.getRootTopic());
-        // Create a temporary file
-        try {
-            // Get the system's temporary directory
-            String tempDir = System.getProperty("java.io.tmpdir");
-            File tempFile = File.createTempFile(filename, ".txt", new File(tempDir));
-            writeToFile(tempFile, result);
-            performDesktopAction(tempFile, this::editFile);
-            tempFile.deleteOnExit();
-        } catch (IOException e) {
-            throw new ExceptionExportFile("Error while exporting to TXT", e);
-        }
-        return ExportStatus.SUCCESS;
+        return new ExportMessage(ExportStatus.SUCCESS, result);
     }
 
-    private void writeToFile(File file, String content) throws IOException {
-        try (FileWriter writer = new FileWriter(file)) {
-            writer.write(content);
-        }
-    }
-
-    private void performDesktopAction(File file, DesktopAction action) throws IOException {
-        try {
-            action.perform(file);
-        } catch (UnsupportedOperationException | IOException e) {
-            throw new IOException("Desktop action failed: " + e.getMessage());
-        }
-    }
-
-    private void editFile(File file) throws IOException {
-        Desktop.getDesktop().edit(file);
-    }
 
     private String dfsRecursive(INode root) {
         StringBuilder sb = new StringBuilder();

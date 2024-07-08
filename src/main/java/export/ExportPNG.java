@@ -3,10 +3,9 @@ package export;
 import board.Sheet;
 import settings.ExportStatus;
 
-public class ExportPNG implements ITypeExport {
+public class ExportPNG implements IExportable {
     @Override
-    public ExportStatus export(Sheet sheet, String filename) {
-        // Export board to PNG file
-        return ExportStatus.SUCCESS;
+    public ExportMessage export(Sheet sheet, String filename) {
+        return new ExportMessage(ExportStatus.SUCCESS, "Exported to PNG");
     }
 }

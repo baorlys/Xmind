@@ -7,7 +7,6 @@ import settings.NodeType;
 import shape.Point;
 import shape.Shape;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +16,15 @@ import java.util.Optional;
 public class ChildNode extends Node implements IChildNode{
     private INode parent;
 
-    public ChildNode(String text, NodeType nodeType, INode currentTopic) throws ExceptionOpenFile, IOException {
+    public ChildNode(String text, NodeType nodeType, INode parent) throws ExceptionOpenFile {
         super(text, nodeType);
-        this.parent = currentTopic;
+        this.parent = parent;
         initShape();
+    }
+
+    public ChildNode(String text, NodeType nodeType, Point center) throws ExceptionOpenFile {
+        super(text, nodeType);
+        this.setShape(new Shape(text.length(), center));
     }
 
     @Override
@@ -31,8 +35,8 @@ public class ChildNode extends Node implements IChildNode{
         Shape shape = new Shape(this.getText().length(),
                 Optional.ofNullable(lastChild)
                         .map(child -> new Point(child.getShape().getCenter().getX(),
-                                child.getShape().getCenter().getY() + 5))
-                        .orElse(new Point(parent.getShape().getCenter().getX() + 5,
+                                child.getShape().getCenter().getY() + 10))
+                        .orElse(new Point(parent.getShape().getCenter().getX() + 10,
                                 parent.getShape().getCenter().getY())));
         this.setShape(shape);
     }
@@ -44,6 +48,7 @@ public class ChildNode extends Node implements IChildNode{
         NodeType nodeType = AddNodeFactory.getChildNodeType(newParent.getType());
         this.setType(nodeType);
         newParent.addChild(this);
+        initShape();
     }
 
     @Override

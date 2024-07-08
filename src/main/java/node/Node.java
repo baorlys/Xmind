@@ -6,17 +6,15 @@ import lombok.Setter;
 import settings.NodeType;
 import settings.PropertiesLoader;
 import settings.Structure;
-import shape.Point;
 import shape.Shape;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 public abstract class Node implements INode {
-    private PropertiesLoader propertiesLoader = PropertiesLoader.getInstance();
+    private PropertiesLoader propertiesLoader;
     private String text;
 
     private List<IChildNode> children;
@@ -25,14 +23,14 @@ public abstract class Node implements INode {
 
     private NodeType type;
 
-    // Default structure is MIND_MAP
-    private Structure structure = Structure.valueOf(propertiesLoader.getProperty("default.structure"));
+    private Structure structure;
 
-    protected Node(String text, NodeType type) throws IOException, ExceptionOpenFile {
+    protected Node(String text, NodeType type) throws ExceptionOpenFile {
         this.text = text;
         this.children = new ArrayList<>();
         this.type = type;
-        this.shape = new Shape(text.length(), new Point(0,0));
+        this.propertiesLoader = PropertiesLoader.getInstance();
+        this.structure = Structure.valueOf(propertiesLoader.getProperty("default.structure"));
     }
 
     public void setText(String text) {

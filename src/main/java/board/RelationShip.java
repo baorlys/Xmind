@@ -6,7 +6,6 @@ import lombok.Setter;
 import node.INode;
 import settings.PropertiesLoader;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,17 +17,18 @@ public class RelationShip {
 
     private List<HashMap<INode,String>> relation;
 
-    private PropertiesLoader propertiesLoader = PropertiesLoader.getInstance();
+    private PropertiesLoader propertiesLoader;
 
-    private String defaultRelationshipName = propertiesLoader.getProperty("default.relationship.name");
 
-    public RelationShip(INode node) throws ExceptionOpenFile, IOException {
+
+    public RelationShip(INode node){
         this.node = node;
         this.relation = new ArrayList<>();
     }
 
-
-    public void addRelation(INode node) {
+    public void addRelation(INode node) throws ExceptionOpenFile {
+        propertiesLoader = PropertiesLoader.getInstance();
+        String defaultRelationshipName = propertiesLoader.getProperty("default.relationship.name");
         HashMap<INode, String> relationMap = new HashMap<>();
         relationMap.put(node, defaultRelationshipName);
         relation.add(relationMap);

@@ -9,15 +9,19 @@ import java.util.Properties;
 public class PropertiesLoader {
     private final Properties properties = new Properties();
 
-    private PropertiesLoader(String propertiesFileName) throws IOException, ExceptionOpenFile {
+    private PropertiesLoader(String propertiesFileName) throws ExceptionOpenFile{
         InputStream input = getClass().getClassLoader().getResourceAsStream(propertiesFileName);
         if (input == null) {
-            throw new ExceptionOpenFile("Could not load properties file: " + propertiesFileName);
+            throw new ExceptionOpenFile(new Exception("Unable to find " + propertiesFileName));
         }
-        properties.load(input);
+        try {
+            properties.load(input);
+        } catch (IOException e) {
+            throw new ExceptionOpenFile(e);
+        }
     }
 
-    public static PropertiesLoader getInstance() throws ExceptionOpenFile, IOException {
+    public static PropertiesLoader getInstance() throws ExceptionOpenFile {
         return new PropertiesLoader("application.properties");
     }
 

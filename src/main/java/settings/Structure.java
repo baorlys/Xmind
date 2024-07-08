@@ -6,7 +6,7 @@ public enum Structure {
     BRACE_MAP,
     ORG_CHART,
     TREE_CHART,
-    FISHBONE,
+    FISH_BONE,
     TREE_TABLE,
     MATRIX
 
