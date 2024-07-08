@@ -27,7 +27,7 @@ public class Sheet {
     private ViewMode viewMode = ViewMode.valueOf(propertiesLoader.getProperty("default.sheet.view.mode"));
 
 
-    public Sheet(String name) throws IOException {
+    public Sheet(String name) throws IOException, ExceptionOpenFile {
         this.name = name;
     }
     public Sheet(String name, IRootNode rootTopic) throws ExceptionOpenFile, IOException {

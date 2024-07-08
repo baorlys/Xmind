@@ -5,11 +5,12 @@ import node.IRootNode;
 import settings.PropertiesLoader;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 public class XMindBuilder {
     Board xmind;
-
+    Logger logger = Logger.getAnonymousLogger();
     PropertiesLoader propertiesLoader = PropertiesLoader.getInstance();
 
     private final String defaultBoardName = propertiesLoader.getProperty("default.board.name");
@@ -36,7 +37,7 @@ public class XMindBuilder {
             try {
                 sheet.addNodeToCurrentTopic(rootTopic);
             } catch (ExceptionOpenFile | IOException e) {
-                e.printStackTrace();
+                logger.warning(e.getMessage());
             }
         });
         return this;
