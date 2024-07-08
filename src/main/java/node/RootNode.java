@@ -1,7 +1,6 @@
 package node;
 
 import settings.NodeType;
-import settings.PropertiesLoader;
 import shape.Point;
 import shape.Shape;
 
@@ -10,12 +9,13 @@ public class RootNode extends Node implements IRootNode {
 
     public RootNode(String text) {
         super(text,NODE_TYPE);
+        initShape();
     }
 
     @Override
     void initShape() {
-        int screenWidth = Integer.parseInt(this.propertiesLoader.getProperty("default.SCENE_WIDTH"));
-        int screenHeight = Integer.parseInt(this.propertiesLoader.getProperty("default.SCENE_HEIGHT"));
+        int screenWidth = Integer.parseInt(this.getPropertiesLoader().getProperty("default.screen.width"));
+        int screenHeight = Integer.parseInt(this.getPropertiesLoader().getProperty("default.screen.height"));
         this.setShape(new Shape(this.getText().length(),new Point(screenWidth/2,screenHeight/2)));
     }
 }

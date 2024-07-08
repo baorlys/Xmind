@@ -6,6 +6,7 @@ import settings.NodeType;
 import shape.Point;
 import shape.Shape;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,13 +15,15 @@ import java.util.Optional;
 public class ChildNode extends Node implements IChildNode{
     private INode parent;
 
-    public ChildNode(String text, NodeType nodeType) {
+    public ChildNode(String text, NodeType nodeType, INode currentTopic) {
         super(text, nodeType);
+        this.parent = currentTopic;
+        initShape();
     }
 
     @Override
     void initShape() {
-        IChildNode lastChild = this.parent.getChildren().stream()
+        IChildNode lastChild = getChildrenOfParent().stream()
                 .reduce((first, second) -> second)
                 .orElse(null);
         Shape shape = new Shape(this.getText().length(),
@@ -50,7 +53,9 @@ public class ChildNode extends Node implements IChildNode{
 
     @Override
     public List<IChildNode> getChildrenOfParent() {
-        return this.parent.getChildren();
+        return Optional.ofNullable(this.parent)
+                .map(INode::getChildren)
+                .orElse(new ArrayList<>());
     }
 
 

@@ -3,6 +3,7 @@ package board;
 import lombok.Getter;
 import lombok.Setter;
 import node.*;
+import settings.PropertiesLoader;
 import shape.Point;
 import settings.NodeType;
 import settings.Structure;
@@ -15,13 +16,13 @@ import java.util.stream.Collectors;
 @Setter
 public class Sheet {
     private boolean isBalanced;
+    private PropertiesLoader propertiesLoader = PropertiesLoader.getInstance();
     private String name;
     private IRootNode rootTopic;
 
-    HashSet<RelationShip> nodes = new HashSet<>();
+    HashSet<RelationShip> nodes;
 
-    // Default view mode is MINDMAP
-    private ViewMode viewMode = ViewMode.MINDMAP;
+    private ViewMode viewMode = ViewMode.valueOf(propertiesLoader.getProperty("default.sheet.view.mode"));
 
 
     public Sheet(String name) {
@@ -30,6 +31,7 @@ public class Sheet {
     public Sheet(String name, IRootNode rootTopic) {
         this.name = name;
         this.rootTopic = rootTopic;
+        this.nodes = new HashSet<>();
         this.addNewNode(rootTopic);
     }
 
@@ -47,8 +49,7 @@ public class Sheet {
         int nodeCount = currentTopic.getChildren().size();
         NodeType childNodeType = AddNodeFactory.getChildNodeType(nodeType);
         IChildNode newNode = new ChildNode(childNodeType.toString().replace("_"," ").toLowerCase()
-                + " " + (nodeCount + 1), childNodeType);
-        newNode.setParent(currentTopic);
+                + " " + (nodeCount + 1), childNodeType, currentTopic);
         currentTopic.addChild(newNode);
         this.addNewNode(newNode);
         return newNode;
@@ -58,7 +59,7 @@ public class Sheet {
 
     public IChildNode addFloatTopic() {
         IChildNode floatTopic = new ChildNode(NodeType.FLOATING_TOPIC.toString().replace("_"," ").toLowerCase()
-              , NodeType.FLOATING_TOPIC);
+              , NodeType.FLOATING_TOPIC, null);
         this.addNewNode(floatTopic);
         return floatTopic;
     }

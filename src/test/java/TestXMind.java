@@ -36,12 +36,25 @@ class TestXMind {
     }
 
     @Test
+    // Test default view mode
+    void testXMindSheetRootTopicViewMode() {
+        Sheet sheet = xMind.getFirstSheet();
+        assertEquals(ViewMode.MIND_MAP, sheet.getViewMode());
+    }
+
+    @Test
+    // Test all nodes default in sheet
+    void testXMindSheetAllNodes() {
+        Sheet sheet = xMind.getFirstSheet();
+        assertEquals(5, sheet.getAllNodes().stream().count());
+    }
+
+    @Test
     // Test default structure
     void testXMindSheetRootTopicStructure() {
         Sheet sheet = xMind.getFirstSheet();
         assertEquals(Structure.MIND_MAP, sheet.getRootTopic().getStructure());
     }
-
 
 
     @Test
@@ -87,13 +100,32 @@ class TestXMind {
     }
 
     @Test
+        // Test get node by position
+    void testGetNodeByPosition() {
+        Sheet sheet = xMind.getFirstSheet();
+        Point positionClick = new Point(960, 540);
+        INode nodeInPosition = sheet.getNodeByPosition(positionClick);
+        assertNotNull(nodeInPosition);
+    }
+
+    @Test
+    // Test root node position
+    void testRootNodePosition() {
+        Sheet sheet = xMind.getFirstSheet();
+        IRootNode rootTopic = sheet.getRootTopic();
+        assertEquals(960, rootTopic.getShape().getCenter().getX());
+        assertEquals(540, rootTopic.getShape().getCenter().getY());
+    }
+
+
+    @Test
     // Test add child node to node by node position
     void testAddNodeByPosition() {
         Sheet sheet = xMind.getFirstSheet();
-        Point positionClick = new Point(0, 0);
+        Point positionClick = new Point(960, 540);
         INode nodeInPosition = sheet.getNodeByPosition(positionClick);
         sheet.addNodeToCurrentTopic(nodeInPosition);
-        assertEquals(1, nodeInPosition.getChildren().stream().count());
+        assertEquals(6, nodeInPosition.getChildren().stream().count());
     }
 
     @Test
@@ -142,7 +174,7 @@ class TestXMind {
     // Test move node to another node by position
     void testMoveNodeByPosition() {
         Sheet sheet = xMind.getFirstSheet();
-        Point positionCurrentNode = new Point(0, 0);
+        Point positionCurrentNode = new Point(, 0);
         Point positionNextNode = new Point(0, 1);
         sheet.moveNode(positionCurrentNode, positionNextNode);
         INode nextNode = sheet.getNodeByPosition(positionNextNode);
@@ -221,14 +253,6 @@ class TestXMind {
         assertEquals(ViewMode.OUTLINER, sheet.getViewMode());
     }
 
-    @Test
-    // Test get node by position
-    void testGetNodeByPosition() {
-        Sheet sheet = xMind.getFirstSheet();
-        Point positionClick = new Point(0, 0);
-        INode nodeInPosition = sheet.getNodeByPosition(positionClick);
-        assertNotNull(nodeInPosition);
-    }
 
     @Test
     // Test change structure of node

@@ -3,6 +3,7 @@ package board;
 import lombok.Getter;
 import lombok.Setter;
 import node.INode;
+import settings.PropertiesLoader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +16,9 @@ public class RelationShip {
 
     private List<HashMap<INode,String>> relation;
 
-    private static final String DEFAULT_RELATIONSHIP_NAME = "relationship";
+    private PropertiesLoader propertiesLoader = PropertiesLoader.getInstance();
+
+    private String defaultRelationshipName = propertiesLoader.getProperty("default.relationship.name");
 
     public RelationShip(INode node) {
         this.node = node;
@@ -25,7 +28,7 @@ public class RelationShip {
 
     public void addRelation(INode node) {
         HashMap<INode, String> relationMap = new HashMap<>();
-        relationMap.put(node, DEFAULT_RELATIONSHIP_NAME);
+        relationMap.put(node, defaultRelationshipName);
         relation.add(relationMap);
     }
 

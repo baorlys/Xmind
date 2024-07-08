@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public abstract class Node implements INode {
-    PropertiesLoader propertiesLoader = PropertiesLoader.getInstance();
+    private PropertiesLoader propertiesLoader = PropertiesLoader.getInstance();
     private String text;
 
     private List<IChildNode> children;
@@ -30,7 +30,7 @@ public abstract class Node implements INode {
         this.text = text;
         this.children = new ArrayList<>();
         this.type = type;
-        initShape();
+        this.shape = new Shape(text.length(), new Point(0,0));
     }
 
     public void setText(String text) {
@@ -47,6 +47,7 @@ public abstract class Node implements INode {
 
     @Override
     public void addChild(IChildNode node) {
+        node.setParent(this);
         this.children.add(node);
     }
 
