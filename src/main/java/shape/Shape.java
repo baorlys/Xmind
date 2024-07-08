@@ -2,7 +2,6 @@ package shape;
 
 import lombok.Getter;
 import lombok.Setter;
-import point.Point;
 
 
 @Getter
@@ -12,10 +11,10 @@ public class Shape {
     private int width;
     private int height;
 
-    public Shape(int width) {
+    public Shape(int width, Point center) {
         this.width = width;
         this.height = 20;
-        this.center = new Point(0, 0);
+        this.center = center;
     }
 
 

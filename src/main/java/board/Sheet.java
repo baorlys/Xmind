@@ -3,7 +3,7 @@ package board;
 import lombok.Getter;
 import lombok.Setter;
 import node.*;
-import point.Point;
+import shape.Point;
 import settings.NodeType;
 import settings.Structure;
 import settings.ViewMode;

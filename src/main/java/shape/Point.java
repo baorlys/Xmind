@@ -1,4 +1,4 @@
-package point;
+package shape;
 
 import lombok.Getter;
 import lombok.Setter;

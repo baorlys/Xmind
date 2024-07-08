@@ -9,12 +9,8 @@ T
 $src/main/java/settings/NodeType.java,7\2\72fbf92246523ee9ff718745237a8b02738a4470
 W
 'src/main/java/export/ExportFactory.java,a\c\ac99d3bcf5289e6bee1b439c953c60da770ccd1e
-N
-src/main/java/point/Point.java,5\c\5c808647f20613692bf056bcf77e6027fdd7627d
 P
  src/main/java/node/RootNode.java,4\4\4443b0bb2cc1a9fe2a487d135059b49dc23aee93
-W
-'src/main/java/builder/XMindBuilder.java,c\e\ceebd4ead66f40a1b7086ce6d1ad47c110b11de4
 S
 #src/main/java/export/ExportPNG.java,8\8\888cfd0e722a70e18accc5300137b410350385f2
 S
@@ -47,3 +43,19 @@ N
 src/main/java/board/Board.java,f\1\f19d9182bc6164a66369d7d04312e177b6c53b74
 N
 src/main/java/board/Sheet.java,d\e\deeb91af9baa9d4c90156be28bbcbbdb16f3a498
+S
+#.idea/sonarlint/issuestore/index.pb,9\f\9fe84ebb15faf917b7def6236dba604453cc61e0
+]
+-.idea/sonarlint/securityhotspotstore/index.pb,8\8\88a9255124c95bdc913197c120a8d560edc59c8e
+a
+1src/main/java/exceptions/ExceptionExportFile.java,9\7\97b604d0a043c13b296444c001d77478f0d49ce6
+S
+#src/main/java/export/ExportTXT.java,9\8\988ba3c828dd91714643c106122ca230b243f39c
+9
+	readme.md,2\7\275d783e298228506068436512433d343feb52aa
+U
+%src/main/java/board/XMindBuilder.java,d\d\dd7ca452f24dda00ed3977cfbeb0b4adef187ec8
+\
+,src/main/java/settings/PropertiesLoader.java,9\3\93548e0142c2c4aa1622befb24d792f0b2e16970
+N
+src/main/java/shape/Point.java,d\0\d087b00f3a32fe54ace87c3171d65b023e5ec8dd

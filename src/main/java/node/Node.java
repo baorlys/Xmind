@@ -3,7 +3,9 @@ package node;
 import lombok.Getter;
 import lombok.Setter;
 import settings.NodeType;
+import settings.PropertiesLoader;
 import settings.Structure;
+import shape.Point;
 import shape.Shape;
 
 import java.util.ArrayList;
@@ -11,7 +13,8 @@ import java.util.List;
 
 @Getter
 @Setter
-public class Node implements INode {
+public abstract class Node implements INode {
+    PropertiesLoader propertiesLoader = PropertiesLoader.getInstance();
     private String text;
 
     private List<IChildNode> children;
@@ -21,9 +24,9 @@ public class Node implements INode {
     private NodeType type;
 
     // Default structure is MIND_MAP
-    private Structure structure = Structure.MIND_MAP;
+    private Structure structure = Structure.valueOf(propertiesLoader.getProperty("default.structure"));
 
-    public Node(String text, NodeType type) {
+    protected Node(String text, NodeType type) {
         this.text = text;
         this.children = new ArrayList<>();
         this.type = type;
@@ -35,9 +38,11 @@ public class Node implements INode {
         this.shape.setWidth(text.length());
     }
 
-    private void initShape() {
-        this.shape = new Shape(text.length());
-    }
+    abstract void initShape();
+
+
+
+
 
 
     @Override

@@ -1,9 +1,9 @@
 import board.Board;
 import board.Sheet;
-import builder.XMindBuilder;
+import board.XMindBuilder;
 import exceptions.ExceptionExportFile;
 import node.INode;
-import point.Point;
+import shape.Point;
 import settings.*;
 import node.IChildNode;
 import node.IRootNode;
@@ -17,30 +17,38 @@ class TestXMind {
     @BeforeEach
     void setUp() {
         xMind = new XMindBuilder()
-                .initBoard()
-                .initDefaultSheet()
-                .initDefaultTopics()
+                .initDefaultXMind()
                 .build();
     }
+
 
     @Test
     // Test if the board has a sheet
     void testXMindSheet() {
-        assertEquals(1, xMind.getSheets().size());
+        assertEquals(1, xMind.getSheets().stream().count());
     }
 
     @Test
     // Test sheet have default topics
     void testXMindSheetRootTopic() {
         Sheet sheet = xMind.getFirstSheet();
-        assertEquals(4, sheet.getRootTopic().getChildren().size());
+        assertEquals(4, sheet.getRootTopic().getChildren().stream().count());
     }
+
+    @Test
+    // Test default structure
+    void testXMindSheetRootTopicStructure() {
+        Sheet sheet = xMind.getFirstSheet();
+        assertEquals(Structure.MIND_MAP, sheet.getRootTopic().getStructure());
+    }
+
+
 
     @Test
     // Test add sheet to board
     void testAddSheet() {
         xMind.addSheet();
-        assertEquals(2, xMind.getSheets().size());
+        assertEquals(2, xMind.getSheets().stream().count());
     }
 
     @Test
@@ -63,12 +71,6 @@ class TestXMind {
     // Test export xMind to test
     void testExportTXT() throws ExceptionExportFile {
         Sheet sheet = xMind.getFirstSheet();
-        INode node = sheet.getRootTopic();
-        IChildNode newMainTopic = sheet.addNodeToCurrentTopic(node);
-        IChildNode newSubTopic = sheet.addNodeToCurrentTopic(newMainTopic);
-        sheet.addNodeToCurrentTopic(newSubTopic);
-        sheet.addNodeToCurrentTopic(newSubTopic);
-        sheet.addNodeToCurrentTopic(node);
         ExportStatus exportStatus = xMind.export(sheet, FileType.TXT, "filename");
         assertEquals(ExportStatus.SUCCESS, exportStatus);
     }
@@ -91,7 +93,7 @@ class TestXMind {
         Point positionClick = new Point(0, 0);
         INode nodeInPosition = sheet.getNodeByPosition(positionClick);
         sheet.addNodeToCurrentTopic(nodeInPosition);
-        assertEquals(1, nodeInPosition.getChildren().size());
+        assertEquals(1, nodeInPosition.getChildren().stream().count());
     }
 
     @Test
@@ -117,9 +119,9 @@ class TestXMind {
         Sheet sheet = xMind.getFirstSheet();
         IRootNode rootTopic = sheet.getRootTopic();
         IChildNode newMainTopic =sheet.addNodeToCurrentTopic(rootTopic);
-        assertEquals(5, sheet.getAllNodes().size());
+        assertEquals(5, sheet.getAllNodes().stream().count());
         sheet.removeNode(newMainTopic);
-        assertEquals(4, sheet.getAllNodes().size());
+        assertEquals(4, sheet.getAllNodes().stream().count());
     }
 
     @Test
@@ -129,11 +131,11 @@ class TestXMind {
         IRootNode rootTopic = sheet.getRootTopic();
         IChildNode newMainTopic = sheet.addNodeToCurrentTopic(rootTopic);
         IChildNode newSubTopic = sheet.addNodeToCurrentTopic(newMainTopic);
-        assertEquals(5, rootTopic.getChildren().size());
-        assertEquals(1, newMainTopic.getChildren().size());
+        assertEquals(5, rootTopic.getChildren().stream().count());
+        assertEquals(1, newMainTopic.getChildren().stream().count());
         sheet.moveNode(newSubTopic, rootTopic);
-        assertEquals(6, rootTopic.getChildren().size());
-        assertEquals(0, newMainTopic.getChildren().size());
+        assertEquals(6, rootTopic.getChildren().stream().count());
+        assertEquals(0, newMainTopic.getChildren().stream().count());
     }
 
     @Test
@@ -144,7 +146,7 @@ class TestXMind {
         Point positionNextNode = new Point(0, 1);
         sheet.moveNode(positionCurrentNode, positionNextNode);
         INode nextNode = sheet.getNodeByPosition(positionNextNode);
-        assertEquals(1, nextNode.getChildren().size());
+        assertEquals(1, nextNode.getChildren().stream().count());
         assertEquals(NodeType.SUB_TOPIC, nextNode.getType());
         INode currentNode = sheet.getNodeByPosition(positionCurrentNode);
         assertEquals(NodeType.SUB_TOPIC, currentNode.getType());
@@ -156,9 +158,9 @@ class TestXMind {
         Sheet sheet = xMind.getFirstSheet();
         IRootNode rootTopic = sheet.getRootTopic();
         IChildNode newMainTopic = sheet.addNodeToCurrentTopic(rootTopic);
-        assertEquals(5, rootTopic.getChildren().size());
+        assertEquals(5, rootTopic.getChildren().stream().count());
         sheet.moveNode(newMainTopic);
-        assertEquals(4, rootTopic.getChildren().size());
+        assertEquals(4, rootTopic.getChildren().stream().count());
         assertEquals(NodeType.FLOATING_TOPIC, newMainTopic.getType());
 
     }
