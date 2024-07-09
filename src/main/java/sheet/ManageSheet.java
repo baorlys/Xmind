@@ -14,9 +14,9 @@ public class ManageSheet implements IManageSheet {
 
 
     public ManageSheet() {
-        defaultSheet();
+        createDefaultSheet();
     }
-    private void defaultSheet() {
+    private void createDefaultSheet() {
         Configuration configuration = new Configuration(PropertiesLoader.load());
         IRootNode rootTopic = new RootNode(configuration.getDefaultRootTopicName());
         sheets.add(new Sheet(configuration.getDefaultSheetName(), rootTopic));
