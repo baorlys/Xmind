@@ -1,19 +1,18 @@
 package export;
 
-import xmind.Sheet;
 import node.IChildNode;
 import node.INode;
 import config.ExportStatus;
-
+import sheet.ISheet;
 
 
 public class ExportTXT implements IExportable {
 
 
     @Override
-    public ExportMessage export(Sheet sheet, String filename) {
-        String result = dfsRecursive(sheet.getRootTopic());
-        return new ExportMessage(ExportStatus.SUCCESS, result);
+    public ExportResult export(ISheet sheet, String filename) {
+        String result = dfsRecursive(sheet.getRootNode());
+        return new ExportResult(ExportStatus.SUCCESS, result);
     }
 
 

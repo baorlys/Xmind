@@ -1,32 +1,29 @@
-package xmind;
+package sheet;
 
 import com.fasterxml.jackson.annotation.*;
 import config.Configuration;
+import config.PropertiesLoader;
 import lombok.Getter;
 import lombok.Setter;
 import node.*;
 import shape.Point;
 import config.NodeType;
 import config.ViewMode;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Sheet {
-    @JsonProperty("id")
-    private String id;
+public class Sheet implements ISheet {
     private String name;
 
-    @JsonBackReference
     private IRootNode rootTopic;
 
-    @JsonManagedReference
     HashSet<Relationship> nodes;
     private ViewMode viewMode;
-
-    private Configuration configuration = new Configuration();
+    @JsonIgnore
+    private Configuration configuration ;
 
 
 
@@ -34,17 +31,33 @@ public class Sheet {
         this.name = name;
         this.rootTopic = rootTopic;
         this.nodes = new HashSet<>();
+        this.configuration = new Configuration(PropertiesLoader.load());
         viewMode = ViewMode.valueOf(configuration.getDefaultSheetViewMode());
-        this.addNodeToList(rootTopic);
+        this.addNodeToSheet(rootTopic);
     }
 
 
-    public void addNodeToList(INode node) {
-        nodes.add(new Relationship(node));
-    }
+
 
     public List<INode> getAllNodes() {
         return nodes.stream().map(Relationship::getNode).collect(Collectors.toList());
+    }
+
+    @Override
+    public void addNodeToSheet(INode node) {
+        nodes.add(new Relationship(node));
+
+    }
+
+    @Override
+    public void removeNode(IChildNode node) {
+        node.removeParent();
+        nodes.removeIf(listNode -> listNode.getNode().equals(node));
+    }
+
+    @Override
+    public IRootNode getRootNode() {
+        return rootTopic;
     }
 
     public IChildNode addNodeFrom(INode currentTopic)  {
@@ -54,14 +67,19 @@ public class Sheet {
         IChildNode newNode = new ChildNode(childNodeType.toString().replace("_"," ").toLowerCase()
                 + " " + (nodeCount + 1), childNodeType, currentTopic);
         currentTopic.addChild(newNode);
-        this.addNodeToList(newNode);
+        this.addNodeToSheet(newNode);
         return newNode;
     }
 
-    public void removeNode(IChildNode topic) {
-        topic.removeParent();
-        nodes.removeIf(listNode -> listNode.getNode().equals(topic));
+    @Override
+    public IChildNode insertFloatingNode(Point position) {
+        IChildNode floatingNode = new ChildNode(NodeType.FLOATING_TOPIC.toString().replace("_"," ").toLowerCase()
+                , NodeType.FLOATING_TOPIC, position);
+        this.addNodeToSheet(floatingNode);
+        return floatingNode;
     }
+
+
 
     public void moveNode(IChildNode nodeMoved, INode destinationNode) {
         nodeMoved.moveTo(destinationNode);
@@ -81,19 +99,34 @@ public class Sheet {
 
     }
 
+    @Override
+    public void changeNodeName(INode node, String name) {
+        nodes.stream().filter(listNode -> listNode.getNode().equals(node))
+                .forEach(listNode -> listNode.getNode().setText(name));
+
+    }
+
     public void createRelationship(INode fromNode, INode toNode) {
         nodes.stream().filter(listNode -> listNode.getNode().equals(fromNode))
                 .forEach(listNode -> listNode.addRelation(toNode));
     }
 
-    public Relationship getRelationshipsOf(INode node) {
-        return nodes.stream().filter(listNode -> listNode.getNode().equals(node))
-                .findFirst().orElse(null);
-    }
 
     public void removeRelationship(INode fromNode, INode toNode) {
         nodes.stream().filter(listNode -> listNode.getNode().equals(fromNode))
                 .forEach(listNode -> listNode.removeRelation(toNode));
+    }
+
+    @Override
+    public boolean isRelated(INode node, INode relatedNode) {
+        return nodes.stream().filter(listNode -> listNode.getNode().equals(node))
+                .anyMatch(listNode -> listNode.isRelated(relatedNode));
+    }
+
+    @Override
+    public Relationship getRelationship(INode node) {
+        return nodes.stream().filter(listNode -> listNode.getNode().equals(node))
+                .findFirst().orElse(null);
     }
 
     public void changeRelationshipName(INode fromNode, INode toNode, String relationshipName) {
@@ -104,15 +137,6 @@ public class Sheet {
 
 
 
-    public void changeViewMode(ViewMode viewMode) {
-        this.viewMode = viewMode;
-    }
-
-    public ViewMode getViewMode() {
-        return viewMode;
-    }
-
-
     public INode getNodeByPosition(Point position) {
         return nodes.stream().map(Relationship::getNode)
                 .filter(node -> node.getShape().isContainPoint(position))
@@ -120,12 +144,6 @@ public class Sheet {
     }
 
 
-    public IChildNode insertFloatTopic(Point center)  {
-        IChildNode floatTopic = new ChildNode(NodeType.FLOATING_TOPIC.toString().replace("_"," ").toLowerCase()
-                , NodeType.FLOATING_TOPIC, center);
-        this.addNodeToList(floatTopic);
-        return floatTopic;
-    }
 
 
 }

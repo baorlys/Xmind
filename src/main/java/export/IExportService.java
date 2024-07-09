@@ -1,12 +1,12 @@
 package export;
 
 import config.FileType;
-import xmind.Sheet;
+import sheet.ISheet;
 
 import java.util.List;
 
 public interface IExportService {
-    ExportMessage export(Sheet sheet, String filename, FileType fileType);
+    ExportResult export(ISheet sheet, String filename, FileType fileType);
 
-    ExportMessage exportAll(List<Sheet> sheets, String filename, FileType fileType);
+    ExportResult exportAll(List<ISheet> sheets, String filename, FileType fileType);
 }

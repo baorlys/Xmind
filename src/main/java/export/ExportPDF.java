@@ -1,11 +1,11 @@
 package export;
 
-import xmind.Sheet;
+import sheet.ISheet;
 import config.ExportStatus;
 
 public class ExportPDF implements IExportable {
     @Override
-    public ExportMessage export(Sheet sheet, String filename) {
-        return new ExportMessage(ExportStatus.SUCCESS, "Exported to PDF");
+    public ExportResult export(ISheet sheet, String filename) {
+        return new ExportResult(ExportStatus.SUCCESS, "Exported to PDF");
     }
 }

@@ -1,7 +1,7 @@
 package export;
 
-import xmind.Sheet;
+import sheet.ISheet;
 
 public interface IExportable {
-    ExportMessage export(Sheet sheet, String filename);
+    ExportResult export(ISheet sheet, String filename);
 }

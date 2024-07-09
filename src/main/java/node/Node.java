@@ -1,9 +1,8 @@
 package node;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import config.Configuration;
+import config.PropertiesLoader;
 import lombok.Getter;
 import lombok.Setter;
 import config.NodeType;
@@ -14,11 +13,10 @@ import java.util.List;
 
 @Getter
 @Setter
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public abstract class Node implements INode {
     private String text;
 
-    @JsonManagedReference
+    @JsonView(ChildNode.class)
     private List<IChildNode> children;
 
     private Shape shape;
@@ -26,8 +24,8 @@ public abstract class Node implements INode {
     private NodeType type;
 
     private Structure structure;
-
-    private Configuration configuration = new Configuration();
+    @JsonIgnore
+    private Configuration configuration = new Configuration(PropertiesLoader.load());
     protected Node(String text, NodeType type) {
         this.text = text;
         this.children = new ArrayList<>();

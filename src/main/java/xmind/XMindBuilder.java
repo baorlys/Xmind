@@ -1,8 +1,11 @@
 package xmind;
 
 import config.Configuration;
+import config.PropertiesLoader;
+import export.ExportService;
 import node.IRootNode;
-
+import sheet.ISheet;
+import sheet.IManageSheet;
 import java.util.stream.IntStream;
 
 public class XMindBuilder {
@@ -13,20 +16,35 @@ public class XMindBuilder {
 
 
     public XMindBuilder() {
-        this.configuration = new Configuration();
+        this.configuration = new Configuration(PropertiesLoader.load());
         xMind = new XMind();
     }
 
-    public XMindBuilder initBoard() {
-        String defaultSheetName = configuration.getDefaultSheetName();
-        xMind.addSheet(defaultSheetName);
+    public XMindBuilder withConfigFile(String configFile) {
+        this.configuration = new Configuration(PropertiesLoader.load(configFile));
+        return this;
+    }
+
+    public XMindBuilder withName(String name) {
+        xMind.setName(name);
+        return this;
+    }
+
+    public XMindBuilder setSheetService(IManageSheet sheetService) {
+        xMind.setSheetService(sheetService);
+        return this;
+    }
+
+    public XMindBuilder setExportService(ExportService exportService) {
+        xMind.setExportService(exportService);
         return this;
     }
 
 
+
     public XMindBuilder initDefaultTopics() {
-        Sheet sheet = xMind.getFirstSheet();
-        IRootNode rootTopic = sheet.getRootTopic();
+        ISheet sheet = xMind.getManageSheet().getFirstSheet();
+        IRootNode rootTopic = sheet.getRootNode();
         IntStream.range(0, configuration.getDefaultNumberOfMainTopic()).forEach(i -> sheet.addNodeFrom(rootTopic));
         return this;
     }
@@ -36,9 +54,7 @@ public class XMindBuilder {
     }
 
 
-    public XMindBuilder initDefaultXMind() {
-        return initBoard().initDefaultTopics();
-    }
+
 
 
 }

@@ -6,11 +6,11 @@ import config.ExportStatus;
 
 @Getter
 @Setter
-public class ExportMessage {
+public class ExportResult {
     private ExportStatus status;
     private String message;
 
-    public ExportMessage(ExportStatus status, String message) {
+    public ExportResult(ExportStatus status, String message) {
         this.status = status;
         this.message = message;
     }

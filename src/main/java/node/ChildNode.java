@@ -1,9 +1,6 @@
 package node;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.Setter;
 import config.NodeType;
@@ -16,31 +13,23 @@ import java.util.Optional;
 
 @Getter
 @Setter
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 
 public class ChildNode extends Node implements IChildNode{
-    @JsonProperty("id")
-    private String id;
-    @JsonBackReference
+    @JsonView(Node.class)
     private INode parent;
 
     public ChildNode(String text, NodeType nodeType, INode parent)  {
         super(text, nodeType);
         this.parent = parent;
         initShape();
-        this.id = generateId();
     }
 
     public ChildNode(String text, NodeType nodeType, Point center) {
         super(text, nodeType);
         this.setShape(new Shape(text.length(), center));
-        this.id = generateId();
     }
 
-    private String generateId() {
-        // Implement ID generation logic here
-        return "child-" + System.currentTimeMillis();
-    }
+
 
     @Override
     void initShape() {

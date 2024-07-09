@@ -1,7 +1,8 @@
-package xmind;
+package sheet;
 
 import com.fasterxml.jackson.annotation.*;
 import config.Configuration;
+import config.PropertiesLoader;
 import lombok.Getter;
 import lombok.Setter;
 import node.INode;
@@ -11,21 +12,17 @@ import java.util.List;
 
 @Getter
 @Setter
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Relationship {
-    @JsonProperty("id")
     private String id;
-    @JsonBackReference
     private INode node;
-    @JsonManagedReference
     private List<HashMap<INode,String>> relation;
-
+    @JsonIgnore
     private Configuration configuration;
 
 
     public Relationship(INode node) {
         this.node = node;
-        this.configuration = new Configuration();
+        this.configuration = new Configuration(PropertiesLoader.load());
         this.relation = new ArrayList<>();
     }
 

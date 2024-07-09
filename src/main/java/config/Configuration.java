@@ -4,8 +4,8 @@ package config;
 public class Configuration {
     private final PropertyLoader propertyLoader;
 
-    public Configuration() {
-        this.propertyLoader = PropertiesLoader.getInstance();
+    public Configuration(PropertyLoader propertyLoader) {
+        this.propertyLoader = propertyLoader;
     }
 
 
