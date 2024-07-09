@@ -1,6 +1,8 @@
 package node;
 
 import com.fasterxml.jackson.annotation.*;
+import config.Configuration;
+import config.PropertiesLoader;
 import lombok.Getter;
 import lombok.Setter;
 import config.NodeType;
@@ -36,11 +38,13 @@ public class ChildNode extends Node implements IChildNode{
         IChildNode lastChild = getChildrenOfParent().stream()
                 .reduce((first, second) -> second)
                 .orElse(null);
+        Configuration configuration = new Configuration(PropertiesLoader.load());
+        int nodePadding = configuration.getDefaultNodePadding();
         Shape shape = new Shape(this.getText().length(),
                 Optional.ofNullable(lastChild)
                         .map(child -> new Point(child.getShape().getCenter().getX(),
-                                child.getShape().getCenter().getY() + 10))
-                        .orElse(new Point(parent.getShape().getCenter().getX() + 10,
+                                child.getShape().getCenter().getY() + nodePadding))
+                        .orElse(new Point(parent.getShape().getCenter().getX() + nodePadding,
                                 parent.getShape().getCenter().getY())));
         this.setShape(shape);
     }

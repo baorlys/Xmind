@@ -45,4 +45,8 @@ public class Configuration {
     public String getDefaultXMindName() {
         return propertyLoader.getProperty("default.xmind.name");
     }
+
+    public int getDefaultNodePadding() {
+        return Integer.parseInt(propertyLoader.getProperty("default.node.padding"));
+    }
 }

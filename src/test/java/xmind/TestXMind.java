@@ -37,6 +37,14 @@ class TestXMind {
     }
 
     @Test
+    // Test configuration works
+    void testConfig() {
+        Configuration config = new Configuration(PropertiesLoader.load("application.properties"));
+        assertEquals("Mind Map", config.getDefaultXMindName().replaceAll("\"", ""));
+        assertEquals(4, config.getDefaultNumberOfMainTopic());
+    }
+
+    @Test
     // Test XMind has a name
     void testXMindName() {
         assertEquals("Test XMind", xMind.getName());
