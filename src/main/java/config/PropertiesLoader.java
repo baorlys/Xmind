@@ -1,7 +1,6 @@
 package config;
 
 
-import lombok.SneakyThrows;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
@@ -10,11 +9,14 @@ import java.util.Properties;
 public class PropertiesLoader implements PropertyLoader {
     private final Properties properties = new Properties();
 
-    @SneakyThrows (IOException.class)
     private PropertiesLoader(String propertiesFileName) {
         Objects.requireNonNull(propertiesFileName);
         InputStream input = getClass().getClassLoader().getResourceAsStream(propertiesFileName);
-        properties.load(input);
+        try {
+            properties.load(input);
+        } catch (IOException e) {
+            ExceptionUtils.sneakyThrow(e);
+        }
     }
 
     public static PropertiesLoader load(String propertiesFileName) {

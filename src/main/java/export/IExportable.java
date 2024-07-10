@@ -1,7 +1,7 @@
 package export;
 
-import sheet.ISheet;
+import sheet.Sheet;
 
 public interface IExportable {
-    ExportResult export(ISheet sheet, String filename);
+    ExportResult export(Sheet sheet, String filename);
 }

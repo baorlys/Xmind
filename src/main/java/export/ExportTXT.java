@@ -1,16 +1,16 @@
 package export;
 
-import node.IChildNode;
+import node.ChildNode;
 import node.INode;
 import config.ExportStatus;
-import sheet.ISheet;
+import sheet.Sheet;
 
 
 public class ExportTXT implements IExportable {
 
 
     @Override
-    public ExportResult export(ISheet sheet, String filename) {
+    public ExportResult export(Sheet sheet, String filename) {
         String result = dfsRecursive(sheet.getRootNode());
         return new ExportResult(ExportStatus.SUCCESS, result);
     }
@@ -24,13 +24,14 @@ public class ExportTXT implements IExportable {
 
     private void dfs(INode node, StringBuilder sb, int level) {
         appendNodeWithIndentation(sb, node, level);
-        for (IChildNode child : node.getChildren()) {
+        for (ChildNode child : node.getChildren()) {
             dfs(child, sb, level + 1);
         }
     }
 
+    // No hardcode
     private void appendNodeWithIndentation(StringBuilder sb, INode node, int level) {
         sb.append("\t".repeat(level));
-        sb.append(node.getText()).append("\n");
+        sb.append(node.getTopic()).append("\n");
     }
 }

@@ -2,25 +2,23 @@ package node;
 
 import config.NodeType;
 import config.Structure;
-import shape.Shape;
-
 import java.util.List;
 
 public interface INode {
-    void addChild(IChildNode node);
-    void removeChild(IChildNode node);
+    void addChild(ChildNode node);
+    void removeChild(ChildNode node);
 
     NodeType getType();
 
-    List<IChildNode> getChildren();
-
-    Shape getShape();
+    List<ChildNode> getChildren();
 
     void changeStructure(Structure structure);
 
     Structure getStructure();
 
-    String getText();
+    String getTopic();
 
-    void setText(String text);
+    void setTopic(String text);
+
+    int getId();
 }

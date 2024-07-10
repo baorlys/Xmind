@@ -1,10 +1,10 @@
 package xmind;
 import config.Configuration;
 import config.PropertiesLoader;
-import export.*;
 import lombok.Getter;
 import lombok.Setter;
-import sheet.IManageSheet;
+import sheet.Sheet;
+import java.util.HashMap;
 
 
 @Getter
@@ -12,20 +12,13 @@ import sheet.IManageSheet;
 public class XMind {
     private String name;
 
-    private IExportService manageExport;
-    private IManageSheet manageSheet;
+    private HashMap<Integer,Sheet> sheets;
+    private Configuration configuration;
+
 
     public XMind() {
-        Configuration configuration = new Configuration(PropertiesLoader.load());
-        this.name = configuration.getDefaultXMindName();
-    }
-
-    public void setSheetService(IManageSheet sheetService) {
-        this.manageSheet = sheetService;
-    }
-
-    public void setExportService(IExportService exportService) {
-        this.manageExport = exportService;
+        this.sheets = new HashMap<>();
+        this.configuration = new Configuration(PropertiesLoader.load());
     }
 
 

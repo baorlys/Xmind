@@ -1,58 +1,61 @@
 package node;
 
-import com.fasterxml.jackson.annotation.*;
 import config.Configuration;
-import config.PropertiesLoader;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import config.NodeType;
 import config.Structure;
-import shape.Shape;
+import sheet.Sheet;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 @Setter
-public abstract class Node implements INode {
-    private String text;
+public class Node implements INode {
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    private static final AtomicInteger uniqueId = new AtomicInteger(0);
+    @Setter(AccessLevel.NONE)
+    private int id;
+    private Sheet sheet;
+    private String topic;
 
-    @JsonView(ChildNode.class)
-    private List<IChildNode> children;
 
-    private Shape shape;
+    private List<ChildNode> children;
 
     private NodeType type;
 
     private Structure structure;
-    @JsonIgnore
-    private Configuration configuration = new Configuration(PropertiesLoader.load());
-    protected Node(String text, NodeType type) {
-        this.text = text;
+    private Configuration configuration;
+    public Node(Sheet sheet, String topic, NodeType type) {
+        this.topic = topic;
         this.children = new ArrayList<>();
         this.type = type;
-        this.structure = Structure.valueOf(configuration.getDefaultStructure());
+        this.configuration = sheet.getConfiguration();
+        this.structure = Structure.valueOf(configuration.getStructure());
+        this.id = uniqueId.getAndIncrement();
     }
 
-    public void setText(String text) {
-        this.text = text;
-        this.shape.setWidth(text.length());
+    public static void resetUniqueId() {
+        uniqueId.set(0);
     }
 
-    abstract void initShape();
-
-
-
-
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
 
 
     @Override
-    public void addChild(IChildNode node) {
+    public void addChild(ChildNode node) {
         node.setParent(this);
         this.children.add(node);
     }
 
     @Override
-    public void removeChild(IChildNode node) {
+    public void removeChild(ChildNode node) {
         this.children.remove(node);
 
     }
@@ -62,4 +65,6 @@ public abstract class Node implements INode {
         this.structure = structure;
         children.forEach(child -> child.changeStructure(structure));
     }
+
+
 }

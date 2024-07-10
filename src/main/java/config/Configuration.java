@@ -7,46 +7,38 @@ public class Configuration {
     public Configuration(PropertyLoader propertyLoader) {
         this.propertyLoader = propertyLoader;
     }
-
-
-    public String getDefaultRootTopicName() {
-        return propertyLoader.getProperty("default.root.topic.name");
-    }
-
-    public String getDefaultStructure() {
-        return propertyLoader.getProperty("default.structure");
-    }
-
-    public String getDefaultRelationshipName() {
-        return propertyLoader.getProperty("default.relationship.name");
-    }
-
-    public int getDefaultNumberOfMainTopic() {
-        return Integer.parseInt(propertyLoader.getProperty("default.number.of.main.topic"));
-    }
-
-    public int getDefaultScreenWidth() {
-        return Integer.parseInt(propertyLoader.getProperty("default.screen.width"));
-    }
-
-    public int getDefaultScreenHeight() {
-        return Integer.parseInt(propertyLoader.getProperty("default.screen.height"));
-    }
-
-    public String getDefaultSheetViewMode() {
-        return propertyLoader.getProperty("default.sheet.view.mode");
-    }
-
-    public String getDefaultSheetName() {
-        return propertyLoader.getProperty("default.sheet.name");
+    private String getProperty(String key) {
+        return propertyLoader.getProperty(key);
     }
 
 
-    public String getDefaultXMindName() {
-        return propertyLoader.getProperty("default.xmind.name");
+    public String getRootTopicName() {
+        return getProperty("default.root.topic.name");
     }
 
-    public int getDefaultNodePadding() {
-        return Integer.parseInt(propertyLoader.getProperty("default.node.padding"));
+    public String getStructure() {
+        return getProperty("default.structure");
     }
+
+    public String getRelationshipName() {
+        return getProperty("default.relationship.name");
+    }
+
+    public String getTopicCount() {
+        return getProperty("default.number.of.main.topic");
+    }
+
+    public String getSheetViewMode() {
+        return getProperty("default.sheet.view.mode");
+    }
+
+    public String getSheetName() {
+        return getProperty("default.sheet.name");
+    }
+
+    public String getXMindName() {
+        return getProperty("default.xMind.name");
+    }
+
+
 }
