@@ -2,7 +2,6 @@ package export;
 
 import lombok.Getter;
 import lombok.Setter;
-import config.ExportStatus;
 
 @Getter
 @Setter

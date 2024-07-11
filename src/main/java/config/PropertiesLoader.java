@@ -1,12 +1,14 @@
 package config;
 
 
+import util.ExceptionUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 
-public class PropertiesLoader implements PropertyLoader {
+public class PropertiesLoader {
     private final Properties properties = new Properties();
 
     private PropertiesLoader(String propertiesFileName) {
@@ -24,15 +26,13 @@ public class PropertiesLoader implements PropertyLoader {
     }
 
     public static PropertiesLoader load() {
-        return new PropertiesLoader("application.properties");
+        return new PropertiesLoader(ConfigValue.CONFIG_FILE.getVariableName());
     }
 
-    @Override
     public String getProperty(String key) {
         return properties.getProperty(key);
     }
 
-    @Override
     public String getProperty(String key, String defaultValue) {
         return properties.getProperty(key, defaultValue);
     }

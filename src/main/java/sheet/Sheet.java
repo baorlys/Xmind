@@ -4,10 +4,10 @@ import config.Configuration;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import node.*;
-import config.NodeType;
-import config.ViewMode;
-import relationship.Relationship;
+import sheet.node.ChildNode;
+import sheet.node.Node;
+import sheet.node.NodeType;
+import sheet.relationship.Relationship;
 import xmind.XMind;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,15 +32,14 @@ public class Sheet {
     private ViewMode viewMode;
 
 
-    private Configuration configuration ;
 
     public Sheet(XMind xMind, String name) {
         this.name = name;
+        this.xMind = xMind;
         this.nodes = new HashMap<>();
         this.relationships = new HashMap<>();
-        this.configuration = xMind.getConfiguration();
-        this.rootNode = new Node(this, configuration.getRootTopicName(), NodeType.ROOT);
-        viewMode = ViewMode.valueOf(configuration.getSheetViewMode());
+        this.rootNode = new Node(this, Configuration.ROOT_TOPIC_NAME, NodeType.ROOT);
+        viewMode = ViewMode.valueOf(Configuration.SHEET_VIEW_MODE);
         this.id = uniqueId.getAndIncrement();
     }
 
