@@ -231,8 +231,6 @@ class TestXMind {
     @Test
     // Test create relationship between nodes
     void testCreateRelationship()  {
-//        Node root = firstSheet.getRootNode();
-
         var topic1 = SheetHandler.getNodeById(firstSheet, 1);
         var topic2 = SheetHandler.getNodeById(firstSheet, 2);
         var topic3 = SheetHandler.getNodeById(firstSheet, 3);
