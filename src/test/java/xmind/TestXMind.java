@@ -1,37 +1,33 @@
 package xmind;
 
-import export.service.ExportHandler;
+import config.Configuration;
 import export.ExportStatus;
 import export.FileType;
-import xmind.file.ImportResult;
-import xmind.file.ImportStatus;
-import xmind.service.SaveOpenHandle;
+import export.service.ExportHandler;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import sheet.Sheet;
+import sheet.ViewMode;
 import sheet.node.ChildNode;
-import sheet.node.Node;
 import sheet.node.NodeType;
 import sheet.node.Structure;
 import sheet.relationship.Relationship;
 import sheet.service.RelationshipHandler;
-import config.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import sheet.Sheet;
 import sheet.service.SheetHandler;
-import sheet.ViewMode;
+import xmind.file.ImportResult;
+import xmind.file.ImportStatus;
+import xmind.service.SaveOpenHandle;
 import xmind.service.SheetsHandler;
 import xmind.service.XMindBuilder;
-
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestXMind {
     XMind xMind;
     Sheet firstSheet;
+
     @BeforeEach
     void setUp() {
-        Sheet.resetUniqueId();
-        Node.resetUniqueId();
-        Relationship.resetUniqueId();
         xMind = new XMindBuilder()
                 .withName("Test XMind")
                 .initDefaultTopics()
@@ -39,17 +35,15 @@ class TestXMind {
         firstSheet = SheetsHandler.getFirstSheet(xMind);
     }
 
-
-
     @Test
-    // Test configuration works
+        // Test configuration works
     void testConfig() {
         assertEquals("Central Topic", Configuration.ROOT_TOPIC_NAME.replaceAll("\"", ""));
         assertEquals(4, Integer.parseInt(Configuration.TOPICS_COUNT));
     }
 
     @Test
-    // Test XMind default
+        // Test XMind default
     void testDefault() {
         assertEquals("Test XMind", xMind.getName());
         assertEquals(1, SheetsHandler.sheetsCount(xMind));
@@ -59,7 +53,7 @@ class TestXMind {
     }
 
     @Test
-    // Test parent of main topic
+        // Test parent of main topic
     void testXMindSheetParent() {
         var root = firstSheet.getRootNode();
 
@@ -68,21 +62,21 @@ class TestXMind {
     }
 
     @Test
-    // Test add Sheet to XMind
+        // Test add Sheet to XMind
     void testAddSheet() {
-        SheetsHandler.addSheet(xMind, new Sheet(xMind,"Sheet 1"));
+        SheetsHandler.addSheet(xMind, new Sheet(xMind, "Sheet 1"));
         assertEquals(2, SheetsHandler.sheetsCount(xMind));
 
-        SheetsHandler.addSheet(xMind, new Sheet(xMind,"Sheet 2"));
+        SheetsHandler.addSheet(xMind, new Sheet(xMind, "Sheet 2"));
         assertEquals(3, SheetsHandler.sheetsCount(xMind));
 
     }
 
     @Test
-    // Test get Sheet from XMind
+        // Test get Sheet from XMind
     void testGetSheetById() {
-        var sheet1 = new Sheet(xMind,"Sheet 1");
-        var sheet2 = new Sheet(xMind,"Sheet 2");
+        var sheet1 = new Sheet(xMind, "Sheet 1");
+        var sheet2 = new Sheet(xMind, "Sheet 2");
 
         SheetsHandler.addSheet(xMind, sheet1);
         SheetsHandler.addSheet(xMind, sheet2);
@@ -96,19 +90,17 @@ class TestXMind {
         assertNotNull(findSheet2);
         assertEquals("Sheet 2", findSheet2.getName());
 
-        SheetsHandler.removeSheet(xMind, 2);
-        assertNull(SheetsHandler.getSheet(xMind, 2));
+        SheetsHandler.removeSheet(xMind, findSheet2.getId());
+        assertNull(SheetsHandler.getSheet(xMind, findSheet2.getId()));
     }
 
 
-
-
     @Test
-    // Test remove Sheet from board by id
+        // Test remove Sheet from board by id
     void testRemoveSheetById() {
-        var sheet = new Sheet(xMind,"Sheet");
+        var sheet = new Sheet(xMind, "Sheet");
 
-        SheetsHandler.addSheet(xMind,sheet);
+        SheetsHandler.addSheet(xMind, sheet);
         assertEquals(2, SheetsHandler.sheetsCount(xMind));
 
         SheetsHandler.removeSheet(xMind, sheet.getId());
@@ -116,9 +108,9 @@ class TestXMind {
     }
 
     @Test
-    // Test remove Sheet from board by Sheet
+        // Test remove Sheet from board by Sheet
     void testRemoveSheetBySheet() {
-        SheetsHandler.addSheet(xMind, new Sheet(xMind,"Sheet 1"));
+        SheetsHandler.addSheet(xMind, new Sheet(xMind, "Sheet 1"));
         assertEquals(2, SheetsHandler.sheetsCount(xMind));
 
         var sheet = SheetsHandler.getFirstSheet(xMind);
@@ -129,7 +121,7 @@ class TestXMind {
 
     @Test
         //Test add node to root topic and main topic
-    void testAddNode()  {
+    void testAddNode() {
         var root = firstSheet.getRootNode();
 
         SheetHandler.addNodeFrom(firstSheet, root);
@@ -142,7 +134,7 @@ class TestXMind {
     }
 
     @Test
-    // Change topic of node
+        // Change topic of node
     void testChangeNodeTopic() {
         var root = firstSheet.getRootNode();
 
@@ -151,9 +143,8 @@ class TestXMind {
     }
 
 
-
     @Test
-    // Test get node by id
+        // Test get node by id
     void testGetNodeById() {
         var lastNodeAdded = SheetHandler.getLastNodeAdded(firstSheet);
         var nodeFindById = SheetHandler.getNodeById(firstSheet, lastNodeAdded.getId());
@@ -163,8 +154,8 @@ class TestXMind {
     }
 
     @Test
-    // Test change node to floating topic
-    void testChangeNodeToFloatTopic()  {
+        // Test change node to floating topic
+    void testChangeNodeToFloatTopic() {
         var topic = SheetHandler.getLastNodeAdded(firstSheet);
         assertEquals(NodeType.MAIN_TOPIC, topic.getType());
 
@@ -173,8 +164,8 @@ class TestXMind {
     }
 
     @Test
-    // Test add float topic
-    void testInsertFloatTopic()  {
+        // Test add float topic
+    void testInsertFloatTopic() {
         SheetHandler.insertFloatingNode(firstSheet);
         var floatTopic = SheetHandler.getLastNodeAdded(firstSheet);
 
@@ -183,8 +174,8 @@ class TestXMind {
     }
 
     @Test
-    // Test add node to float topic
-    void testAddNodeToFloatTopic()  {
+        // Test add node to float topic
+    void testAddNodeToFloatTopic() {
         SheetHandler.insertFloatingNode(firstSheet);
         var floatTopic = SheetHandler.getLastNodeAdded(firstSheet);
 
@@ -195,7 +186,7 @@ class TestXMind {
     }
 
     @Test
-    // Test remove node
+        // Test remove node
     void testRemoveNode() {
         var root = firstSheet.getRootNode();
 
@@ -210,7 +201,7 @@ class TestXMind {
     }
 
     @Test
-    // Test move node to another node
+        // Test move node to another node
     void testMoveNode() {
         var root = firstSheet.getRootNode();
         var topic = SheetHandler.getLastNodeAdded(firstSheet);
@@ -229,11 +220,16 @@ class TestXMind {
 
 
     @Test
-    // Test create relationship between nodes
-    void testCreateRelationship()  {
-        var topic1 = SheetHandler.getNodeById(firstSheet, 1);
-        var topic2 = SheetHandler.getNodeById(firstSheet, 2);
-        var topic3 = SheetHandler.getNodeById(firstSheet, 3);
+        // Test create relationship between nodes
+    void testCreateRelationship() {
+        SheetHandler.addNodeFrom(firstSheet, firstSheet.getRootNode());
+        var topic1 = SheetHandler.getLastNodeAdded(firstSheet);
+
+        SheetHandler.addNodeFrom(firstSheet, firstSheet.getRootNode());
+        var topic2 = SheetHandler.getLastNodeAdded(firstSheet);
+
+        SheetHandler.addNodeFrom(firstSheet, firstSheet.getRootNode());
+        var topic3 = SheetHandler.getLastNodeAdded(firstSheet);
 
         RelationshipHandler.createRelation(firstSheet, topic1, topic2);
         RelationshipHandler.createRelation(firstSheet, topic1, topic2);
@@ -245,60 +241,60 @@ class TestXMind {
 
 
     @Test
-    // Test remove relationship between nodes
-    void testRemoveRelationship()  {
+        // Test remove relationship between nodes
+    void testRemoveRelationship() {
         var root = firstSheet.getRootNode();
         var topic = SheetHandler.getLastNodeAdded(firstSheet);
 
         RelationshipHandler.createRelation(firstSheet, topic, root);
 
-        var rel = firstSheet.getRelationships().get(0);
-        assertTrue(RelationshipHandler.isRelationExist(firstSheet, rel.getId()));
+        assertEquals(1, firstSheet.getRelationships().size());
 
-        RelationshipHandler.removeRelation(firstSheet, 0);
+        Relationship rel = RelationshipHandler.getLastRelationAdded(firstSheet);
+        RelationshipHandler.removeRelation(firstSheet, rel.getId());
 
         assertFalse(RelationshipHandler.isRelationExist(firstSheet, rel.getId()));
     }
 
 
     @Test
-    // Test change relationship name
-    void testChangeRelationshipName()  {
+        // Test change relationship name
+    void testChangeRelationshipName() {
         var root = firstSheet.getRootNode();
         var topic = SheetHandler.getLastNodeAdded(firstSheet);
 
         RelationshipHandler.createRelation(firstSheet, topic, root);
+        var rel = RelationshipHandler.getLastRelationAdded(firstSheet);
 
-        RelationshipHandler.changeRelationName(firstSheet, 0, "New name");
+        RelationshipHandler.changeRelationName(firstSheet, rel.getId(), "New name");
 
-        assertEquals("New name", firstSheet.getRelationships().get(0).getName());
+        assertEquals("New name", rel.getName());
     }
 
     @Test
         // Test export xMind to png file
     void testExportPNG() {
-        var result = ExportHandler.export(firstSheet,"filename", FileType.PNG);
+        var result = ExportHandler.export(firstSheet, "filename", FileType.PNG);
         assertEquals(ExportStatus.SUCCESS, result.getStatus());
     }
 
 
     @Test
-    // Test save xMind to file
+        // Test save xMind to file
     void testSaveXMind() {
         var result = SaveOpenHandle.save(xMind, "filename");
         assertEquals(ExportStatus.SUCCESS, result.getStatus());
     }
 
     @Test
-    // Test open xMind from file
+        // Test open xMind from file
     void testOpenXMind() {
         var result = SaveOpenHandle.save(xMind, "filename");
         assertEquals(ExportStatus.SUCCESS, result.getStatus());
 
         ImportResult importResult = SaveOpenHandle.open("filename");
-        assertEquals(ImportStatus.SUCCESS,importResult.getStatus());
+        assertEquals(ImportStatus.SUCCESS, importResult.getStatus());
     }
-
 
 
 }

@@ -8,16 +8,13 @@ import sheet.Sheet;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 
 @Getter
 @Setter
 public class Node implements INode {
     @Setter(AccessLevel.NONE)
-    @Getter(AccessLevel.NONE)
-    private static final AtomicInteger uniqueId = new AtomicInteger(0);
-    @Setter(AccessLevel.NONE)
-    private int id;
+    private UUID id;
     private Sheet sheet;
     private String topic;
 
@@ -28,18 +25,15 @@ public class Node implements INode {
 
     private Structure structure;
     public Node(Sheet sheet, String topic, NodeType type) {
+        this.id = UUID.randomUUID();
         this.topic = topic;
         this.sheet = sheet;
         this.type = type;
 
         this.children = new ArrayList<>();
         this.structure = Structure.valueOf(Configuration.STRUCTURE);
-        this.id = uniqueId.getAndIncrement();
     }
 
-    public static void resetUniqueId() {
-        uniqueId.set(0);
-    }
 
     public void setTopic(String topic) {
         this.topic = topic;

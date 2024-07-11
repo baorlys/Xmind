@@ -2,9 +2,9 @@ package export.filetype;
 
 import export.ExportResult;
 import export.ExportStatus;
+import sheet.Sheet;
 import sheet.node.ChildNode;
 import sheet.node.INode;
-import sheet.Sheet;
 
 
 public class ExportTXT implements IExportable {

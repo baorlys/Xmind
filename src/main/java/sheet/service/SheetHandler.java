@@ -2,12 +2,13 @@ package sheet.service;
 
 import config.Configuration;
 import sheet.Sheet;
-import sheet.node.NodeType;
 import sheet.node.ChildNode;
 import sheet.node.INode;
+import sheet.node.NodeType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SheetHandler {
     private SheetHandler() {
@@ -52,8 +53,8 @@ public class SheetHandler {
         return nodes.get(nodes.size() - 1);
     }
 
-    public static INode getNodeById(Sheet firstSheet, int i) {
-        return firstSheet.getNodes().get(i);
+    public static INode getNodeById(Sheet firstSheet, UUID id) {
+        return firstSheet.getNodes().get(id);
     }
 
 

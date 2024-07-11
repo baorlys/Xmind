@@ -9,42 +9,37 @@ import sheet.node.Node;
 import sheet.node.NodeType;
 import sheet.relationship.Relationship;
 import xmind.XMind;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Getter
 @Setter
 public class Sheet {
     @Setter(AccessLevel.NONE)
-    @Getter(AccessLevel.NONE)
-    private static final AtomicInteger uniqueId = new AtomicInteger(0);
-
-    private int id;
+    private UUID id;
 
     private XMind xMind;
     private String name;
 
     private Node rootNode;
 
-    Map<Integer, Relationship> relationships;
+    Map<UUID, Relationship> relationships;
 
-    Map<Integer, ChildNode> nodes;
+    Map<UUID, ChildNode> nodes;
     private ViewMode viewMode;
 
 
 
     public Sheet(XMind xMind, String name) {
+        this.id = UUID.randomUUID();
         this.name = name;
         this.xMind = xMind;
         this.nodes = new HashMap<>();
         this.relationships = new HashMap<>();
         this.rootNode = new Node(this, Configuration.ROOT_TOPIC_NAME, NodeType.ROOT);
         viewMode = ViewMode.valueOf(Configuration.SHEET_VIEW_MODE);
-        this.id = uniqueId.getAndIncrement();
-    }
-
-    public static void resetUniqueId() {
-        uniqueId.set(0);
     }
 
     public void addNodeToSheet(ChildNode node) {

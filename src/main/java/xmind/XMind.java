@@ -3,7 +3,9 @@ package xmind;
 import lombok.Getter;
 import lombok.Setter;
 import sheet.Sheet;
+
 import java.util.HashMap;
+import java.util.UUID;
 
 
 @Getter
@@ -11,7 +13,7 @@ import java.util.HashMap;
 public class XMind {
 
     private String name;
-    private HashMap<Integer,Sheet> sheets;
+    private HashMap<UUID,Sheet> sheets;
     public XMind() {
         this.sheets = new HashMap<>();
     }

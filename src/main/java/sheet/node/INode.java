@@ -1,6 +1,7 @@
 package sheet.node;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface INode {
     void addChild(ChildNode node);
@@ -18,5 +19,5 @@ public interface INode {
 
     void setTopic(String text);
 
-    int getId();
+    UUID getId();
 }
